@@ -13,7 +13,7 @@ object ApiConfig {
 
     private const val BASE_URL = "https://api.themoviedb.org/3/"
 
-    private const val timeout = 60L
+    private const val timeout = 10L
 
     private val interceptor = Interceptor { chain ->
         val original = chain.request()

@@ -23,10 +23,9 @@ class MovieAdapter(
 ) : RecyclerView.Adapter<BaseViewHolder<MovieItem>>() {
 
     var movies: List<MovieItem> = emptyList()
-        @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value
-            notifyDataSetChanged()
+            notifyItemChanged(0, movies.size)
         }
 
     override fun onBindViewHolder(holder: BaseViewHolder<MovieItem>, position: Int) {

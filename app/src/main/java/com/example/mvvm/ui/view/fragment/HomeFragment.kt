@@ -1,6 +1,10 @@
 package com.example.mvvm.ui.view.fragment
 
 import android.view.View
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import androidx.core.content.ContextCompat
+import androidx.core.view.get
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -8,8 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.mvvm.R
 import com.example.mvvm.data.enum.ItemMovieType
-import com.example.mvvm.ui.base.BaseFragment
+import com.example.mvvm.data.model.MovieItem
 import com.example.mvvm.databinding.FragmentHomeBinding
+import com.example.mvvm.ui.base.BaseFragment
 import com.example.mvvm.ui.view.adapter.MovieAdapter
 import com.example.mvvm.ui.viewmodel.HomeViewModel
 
@@ -64,6 +69,7 @@ class HomeFragment(
 
         }
         viewModel.moviesUpComing.observe(viewLifecycleOwner) {
+            initIndicatorBanner(it?.movies.orEmpty())
             upComingAdapter.movies = it?.movies.orEmpty()
         }
     }
@@ -117,7 +123,33 @@ class HomeFragment(
         }
     }
 
+    private fun initIndicatorBanner(list: List<MovieItem>) {
+        binding.indicatorBanner.removeAllViews()
+        for (index in list.indices) {
+            val radioButton = RadioButton(context)
+            radioButton.apply {
+                val params = RadioGroup.LayoutParams(
+                    RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT
+                )
+                val margin = context.resources.getDimensionPixelSize(R.dimen.margin_indicator)
+                params.setMargins(margin, margin, margin, 0)
+
+                layoutParams = params
+                buttonDrawable = ContextCompat.getDrawable(context, R.drawable.drawable_indicator)
+            }
+
+            binding.indicatorBanner.addView(radioButton)
+        }
+        (binding.indicatorBanner[0] as RadioButton).isChecked = true
+    }
+
     override fun initEvent() {
+        binding.banner.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                (binding.indicatorBanner[position] as RadioButton).isChecked = true
+            }
+        })
     }
 
 }

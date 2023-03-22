@@ -4,7 +4,7 @@ import com.example.mvvm.data.model.Results
 import com.example.mvvm.data.model.MovieItem
 import com.example.mvvm.data.model.home.UpComing
 import com.example.mvvm.extension.orZero
-import com.example.mvvm.extension.w533xh300
+import com.example.mvvm.extension.orW533xH300
 
 class UpComingMapper : Mapper<Results, UpComing> {
     override fun mapFrom(item: Results): UpComing {
@@ -14,7 +14,7 @@ class UpComingMapper : Mapper<Results, UpComing> {
             movies = item.results?.map {
                 MovieItem(
                     id = it.id.orZero(),
-                    imagePath = it.posterPath.w533xh300(),
+                    imagePath = it.posterPath.orW533xH300(),
                     title = it.title.orEmpty()
                 )
             }.orEmpty()
