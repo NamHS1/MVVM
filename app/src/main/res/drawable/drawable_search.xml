@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/background_search" />
+    <item
+        android:width="35dp"
+        android:height="35dp"
+        android:drawable="@drawable/baseline_search_24"
+        android:left="15dp"
+        android:top="7.5dp" />
+</layer-list>

@@ -18,7 +18,11 @@ abstract class BaseActivity<DB : ViewDataBinding, VM : BaseViewModel> : AppCompa
 
     protected abstract var viewModelFactory: ViewModelProvider.Factory
 
-    protected abstract fun observeViewModel(viewModel: VM)
+    protected abstract fun observeViewModel()
+
+    protected abstract fun initControls()
+
+    protected abstract fun initEvent()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +32,9 @@ abstract class BaseActivity<DB : ViewDataBinding, VM : BaseViewModel> : AppCompa
         viewModel = ViewModelProvider(this, viewModelFactory)[classTypeOfViewModel]
         viewModel.initViewModel()
 
-        observeViewModel(viewModel)
+        observeViewModel()
+
+        initControls()
+        initEvent()
     }
 }

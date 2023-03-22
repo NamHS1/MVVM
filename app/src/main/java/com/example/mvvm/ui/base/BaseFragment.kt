@@ -11,9 +11,9 @@ import androidx.lifecycle.ViewModelProvider
 
 abstract class BaseFragment<DB : ViewDataBinding, VM : BaseViewModel> : Fragment() {
 
-    lateinit var binding: DB
+    protected lateinit var binding: DB
 
-    private lateinit var viewModel: VM
+    protected lateinit var viewModel: VM
 
     protected abstract var layoutResId: Int
 
@@ -21,7 +21,11 @@ abstract class BaseFragment<DB : ViewDataBinding, VM : BaseViewModel> : Fragment
 
     protected abstract var viewModelFactory: ViewModelProvider.Factory
 
-    protected abstract fun observeViewModel(viewModel: VM)
+    protected abstract fun observeViewModel()
+
+    protected abstract fun initControls()
+
+    protected abstract fun initEvent()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,6 +42,9 @@ abstract class BaseFragment<DB : ViewDataBinding, VM : BaseViewModel> : Fragment
         viewModel = ViewModelProvider(this, viewModelFactory)[classTypeOfViewModel]
         viewModel.initViewModel()
 
-        observeViewModel(viewModel)
+        observeViewModel()
+
+        initControls()
+        initEvent()
     }
 }

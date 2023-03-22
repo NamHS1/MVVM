@@ -25,6 +25,12 @@ class FavouriteFragment(
 
 ) : BaseFragment<FragmentFavouriteBinding, FavouriteViewModel>() {
 
-    override fun observeViewModel(viewModel: FavouriteViewModel) {
+    override fun observeViewModel() {
+    }
+
+    override fun initControls() {
+    }
+
+    override fun initEvent() {
     }
 }

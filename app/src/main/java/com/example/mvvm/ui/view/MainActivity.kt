@@ -25,7 +25,6 @@ class MainActivity(
         }
     }
 ) : BaseActivity<ActivityMainBinding, MainViewModel>() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -35,6 +34,11 @@ class MainActivity(
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController)
     }
 
-    override fun observeViewModel(viewModel: MainViewModel) {}
+    override fun observeViewModel() {}
+
+    override fun initControls() {}
+
+    override fun initEvent() {
+    }
 
 }
