@@ -1,6 +1,7 @@
 package com.example.mvvm.ui.base
 
 import androidx.lifecycle.ViewModel
+import com.example.mvvm.data.enum.State
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -15,21 +16,25 @@ abstract class BaseViewModel : ViewModel() {
 
     inline fun <T> Observable<T>.fetchData(
         crossinline success: (T) -> Unit,
-        crossinline error: (Throwable) -> Unit
+        crossinline error: (Throwable) -> Unit,
+        crossinline state: (State) -> Unit
     ) {
         subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                state(State.LOADING)
+            }
             .subscribe(
                 { data ->
+                    state(State.SUCCESS)
                     success(data)
                 },
                 { throwable ->
+                    state(State.ERROR)
                     error(throwable)
                 }
             ).track()
     }
-
-    abstract fun initViewModel()
 
     override fun onCleared() = compositeDisposable.dispose()
 }

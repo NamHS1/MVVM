@@ -1,6 +1,5 @@
 package com.example.mvvm.ui.view.fragment
 
-import android.view.View
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.core.content.ContextCompat
@@ -40,37 +39,63 @@ class HomeFragment(
         MovieAdapter(
             requireContext(),
             ItemMovieType.SMALL,
-            onClickListener
+            actionMoveDetail = {},
+            actionLoadMore = {
+                viewModel.getMoviesPopular()
+            },
+            actionReload = {
+                viewModel.getMoviesPopular()
+            }
         )
     }
-    private val nowPlayingMapper by lazy {
+    private val nowPlayingAdapter by lazy {
         MovieAdapter(
             requireContext(),
             ItemMovieType.SMALL,
-            onClickListener
+            actionMoveDetail = {},
+            actionLoadMore = {
+                viewModel.getMoviesNowPlaying()
+            },
+            actionReload = {
+                viewModel.getMoviesNowPlaying()
+            }
         )
     }
     private val upComingAdapter by lazy {
         MovieAdapter(
             requireContext(),
             ItemMovieType.BIG,
-            onClickListener
+            actionMoveDetail = {},
+            actionLoadMore = {},
+            actionReload = {
+                viewModel.getMoviesUpComing()
+            }
         )
     }
 
-    private val onClickListener = View.OnClickListener {}
-
     override fun observeViewModel() {
         viewModel.moviesNowPlaying.observe(viewLifecycleOwner) {
-            nowPlayingMapper.movies = it?.movies.orEmpty()
+            nowPlayingAdapter.movies = it?.movies?.toMutableList() as MutableList<MovieItem>
         }
         viewModel.moviesPopular.observe(viewLifecycleOwner) {
-            popularAdapter.movies = it?.movies.orEmpty()
+            popularAdapter.movies = it?.movies?.toMutableList() as MutableList<MovieItem>
 
         }
         viewModel.moviesUpComing.observe(viewLifecycleOwner) {
-            initIndicatorBanner(it?.movies.orEmpty())
-            upComingAdapter.movies = it?.movies.orEmpty()
+            it?.movies?.let { movie ->
+                initIndicatorBanner(movie.size)
+                upComingAdapter.movies = movie.toMutableList()
+            }
+        }
+
+        viewModel.statePopular.observe(viewLifecycleOwner) {
+            popularAdapter.state = it
+        }
+        viewModel.stateUpComing.observe(viewLifecycleOwner) {
+            upComingAdapter.state = it
+        }
+        viewModel.stateNowPlaying.observe(viewLifecycleOwner) {
+            nowPlayingAdapter.state = it
         }
     }
 
@@ -78,10 +103,20 @@ class HomeFragment(
         binding.banner.apply {
             adapter = upComingAdapter
             setPageTransformer(this)
+            initIndicatorBanner(1)
         }
 
         intiRecyclerView(binding.listPopular, popularAdapter)
-        intiRecyclerView(binding.listPlayNow, nowPlayingMapper)
+        intiRecyclerView(binding.listPlayNow, nowPlayingAdapter)
+    }
+
+    override fun initEvent() {
+        binding.banner.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                (binding.indicatorBanner[position] as RadioButton).isChecked = true
+            }
+        })
     }
 
     private fun setPageTransformer(viewPager2: ViewPager2) {
@@ -91,14 +126,14 @@ class HomeFragment(
             offscreenPageLimit = 1
 
             val maxAlpha = 1.0f
-            val minAlpha = 0f
+            val minAlpha = 0.8f
 
             val maxScale = 1f
-            val scalePercent = 0.5f
+            val scalePercent = 0.9f
             val minScale = scalePercent * maxScale
 
             val screenHeight = resources.displayMetrics.heightPixels
-            val nextItemTranslationX = 19f * screenHeight / 60
+            val nextItemTranslationX = 2.5F * screenHeight / 60
             setPageTransformer { view, position ->
                 // position  -1: left, 0: center, 1: right
                 val absPosition = kotlin.math.abs(position)
@@ -123,9 +158,9 @@ class HomeFragment(
         }
     }
 
-    private fun initIndicatorBanner(list: List<MovieItem>) {
+    private fun initIndicatorBanner(size: Int) {
         binding.indicatorBanner.removeAllViews()
-        for (index in list.indices) {
+        for (index in 0 until size) {
             val radioButton = RadioButton(context)
             radioButton.apply {
                 val params = RadioGroup.LayoutParams(
@@ -141,15 +176,6 @@ class HomeFragment(
             binding.indicatorBanner.addView(radioButton)
         }
         (binding.indicatorBanner[0] as RadioButton).isChecked = true
-    }
-
-    override fun initEvent() {
-        binding.banner.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                (binding.indicatorBanner[position] as RadioButton).isChecked = true
-            }
-        })
     }
 
 }

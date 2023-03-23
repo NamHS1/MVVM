@@ -30,7 +30,6 @@ abstract class BaseActivity<DB : ViewDataBinding, VM : BaseViewModel> : AppCompa
         binding.lifecycleOwner = this
 
         viewModel = ViewModelProvider(this, viewModelFactory)[classTypeOfViewModel]
-        viewModel.initViewModel()
 
         observeViewModel()
 

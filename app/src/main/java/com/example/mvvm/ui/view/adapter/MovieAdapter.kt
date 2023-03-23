@@ -1,6 +1,5 @@
 package com.example.mvvm.ui.view.adapter
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View.OnClickListener
@@ -9,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mvvm.R
 import com.example.mvvm.data.enum.ItemMovieType
+import com.example.mvvm.data.enum.State
 import com.example.mvvm.data.model.MovieItem
 import com.example.mvvm.databinding.ItemBigMovieBinding
 import com.example.mvvm.databinding.ItemSmallMovieBinding
@@ -19,17 +19,32 @@ import com.example.mvvm.ui.view.adapter.viewholder.SmallViewHolder
 class MovieAdapter(
     private val context: Context,
     private val type: ItemMovieType,
-    private val onClickListener: OnClickListener
+    private val actionMoveDetail: OnClickListener,
+    private val actionLoadMore: OnClickListener,
+    private val actionReload: OnClickListener,
 ) : RecyclerView.Adapter<BaseViewHolder<MovieItem>>() {
 
-    var movies: List<MovieItem> = emptyList()
+    var movies: MutableList<MovieItem> = mutableListOf()
+        set(value) {
+            if (movies.isNotEmpty()) {
+                field.addAll(value)
+            } else {
+                field = value
+            }
+            notifyItemRangeInserted(movies.size, field.size)
+        }
+    var state: State = State.LOADING
         set(value) {
             field = value
-            notifyItemChanged(0, movies.size)
+            notifyItemChanged(movies.size)
         }
 
     override fun onBindViewHolder(holder: BaseViewHolder<MovieItem>, position: Int) {
-        holder.bind(movies[position])
+        if (position < itemCount - 1) {
+            holder.bind(movies[position], State.SUCCESS)
+        } else {
+            holder.bind(null, state)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<MovieItem> {
@@ -41,7 +56,13 @@ class MovieAdapter(
                     parent,
                     false
                 )
-                SmallViewHolder(context, binding, onClickListener)
+                SmallViewHolder(
+                    context = context,
+                    binding = binding,
+                    actionReload = actionReload,
+                    actionLoadMore = actionLoadMore,
+                    actionMoveDetail = actionMoveDetail
+                )
             }
 
             else -> {
@@ -51,10 +72,29 @@ class MovieAdapter(
                     parent,
                     false
                 )
-                BigViewHolder(context, binding, onClickListener)
+                BigViewHolder(
+                    context = context,
+                    binding = binding,
+                    actionReload = actionReload,
+                    actionMoveDetail = actionMoveDetail
+                )
             }
         }
     }
 
-    override fun getItemCount() = movies.size
+    override fun getItemCount() = when (state) {
+        State.LOAD_MORE -> {
+            movies.size + 1
+        }
+        State.LOADING, State.ERROR -> {
+            if (movies.isNotEmpty()) {
+                movies.size + 1
+            } else {
+                1
+            }
+        }
+        else -> {
+            movies.size
+        }
+    }
 }
