@@ -64,4 +64,25 @@ class MovieUseCase(
         return getMovie(type, page, keyWord)
     }
 
+
+    fun getPagePopular(popular: Popular?): Int {
+        return popular?.let {
+            if (it.page < it.totalPage) {
+                it.page + 1
+            } else {
+                it.page
+            }
+        } ?: 1
+    }
+
+    fun getPageNowPlaying(nowPlaying: NowPlaying?): Int {
+        return nowPlaying?.let {
+            if (it.page < it.totalPage) {
+                it.page + 1
+            } else {
+                it.page
+            }
+        } ?: 1
+    }
+
 }

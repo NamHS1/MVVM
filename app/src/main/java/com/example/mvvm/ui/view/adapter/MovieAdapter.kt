@@ -13,8 +13,8 @@ import com.example.mvvm.data.model.MovieItem
 import com.example.mvvm.databinding.ItemBigMovieBinding
 import com.example.mvvm.databinding.ItemSmallMovieBinding
 import com.example.mvvm.ui.base.BaseViewHolder
-import com.example.mvvm.ui.view.adapter.viewholder.BigViewHolder
-import com.example.mvvm.ui.view.adapter.viewholder.SmallViewHolder
+import com.example.mvvm.ui.view.adapter.viewholder.BigMovieViewHolder
+import com.example.mvvm.ui.view.adapter.viewholder.SmallMovieViewHolder
 
 class MovieAdapter(
     private val context: Context,
@@ -56,7 +56,7 @@ class MovieAdapter(
                     parent,
                     false
                 )
-                SmallViewHolder(
+                SmallMovieViewHolder(
                     context = context,
                     binding = binding,
                     actionReload = actionReload,
@@ -72,7 +72,7 @@ class MovieAdapter(
                     parent,
                     false
                 )
-                BigViewHolder(
+                BigMovieViewHolder(
                     context = context,
                     binding = binding,
                     actionReload = actionReload,

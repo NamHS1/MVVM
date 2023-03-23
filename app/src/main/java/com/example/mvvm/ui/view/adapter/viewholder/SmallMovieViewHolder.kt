@@ -11,7 +11,7 @@ import com.example.mvvm.databinding.ItemSmallMovieBinding
 import com.example.mvvm.extension.onVisibility
 import com.example.mvvm.ui.base.BaseViewHolder
 
-class SmallViewHolder(
+class SmallMovieViewHolder(
     private val context: Context,
     private val binding: ItemSmallMovieBinding,
     private val actionMoveDetail: OnClickListener,
@@ -30,6 +30,7 @@ class SmallViewHolder(
             when (state) {
                 State.LOADING -> {
                     (container as ViewGroup).onVisibility(loading)
+                    binding.root.setOnClickListener(null)
                 }
                 State.ERROR-> {
                     (container as ViewGroup).onVisibility(reload)

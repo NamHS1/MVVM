@@ -10,7 +10,7 @@ import com.example.mvvm.databinding.ItemBigMovieBinding
 import com.example.mvvm.extension.onVisibility
 import com.example.mvvm.ui.base.BaseViewHolder
 
-class BigViewHolder(
+class BigMovieViewHolder(
     private val context: Context,
     private val binding: ItemBigMovieBinding,
     private val actionMoveDetail: View.OnClickListener,
@@ -23,9 +23,10 @@ class BigViewHolder(
             when (state) {
                 State.LOADING -> {
                     (container as ViewGroup).onVisibility(loading)
+                    binding.root.setOnClickListener(null)
                 }
                 State.ERROR -> {
-                    (container as ViewGroup).onVisibility(loadMore)
+                    (container as ViewGroup).onVisibility(reload)
 
                     binding.root.setOnClickListener { it1 ->
                         actionReload.onClick(it1)

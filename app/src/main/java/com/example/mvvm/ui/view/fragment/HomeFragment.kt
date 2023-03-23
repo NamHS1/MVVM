@@ -16,6 +16,7 @@ import com.example.mvvm.databinding.FragmentHomeBinding
 import com.example.mvvm.ui.base.BaseFragment
 import com.example.mvvm.ui.view.adapter.MovieAdapter
 import com.example.mvvm.ui.viewmodel.HomeViewModel
+import com.example.mvvm.util.EventObserver
 
 class HomeFragment(
 
@@ -74,36 +75,35 @@ class HomeFragment(
     }
 
     override fun observeViewModel() {
-        viewModel.moviesNowPlaying.observe(viewLifecycleOwner) {
-            nowPlayingAdapter.movies = it?.movies?.toMutableList() as MutableList<MovieItem>
-        }
-        viewModel.moviesPopular.observe(viewLifecycleOwner) {
-            popularAdapter.movies = it?.movies?.toMutableList() as MutableList<MovieItem>
-
-        }
-        viewModel.moviesUpComing.observe(viewLifecycleOwner) {
-            it?.movies?.let { movie ->
+        viewModel.moviesNowPlaying.observe(viewLifecycleOwner, EventObserver {
+            nowPlayingAdapter.movies = it.movies?.toMutableList() as MutableList<MovieItem>
+        })
+        viewModel.moviesPopular.observe(viewLifecycleOwner, EventObserver {
+            popularAdapter.movies = it.movies?.toMutableList() as MutableList<MovieItem>
+        })
+        viewModel.moviesUpComing.observe(viewLifecycleOwner, EventObserver {
+            it.movies?.let { movie ->
                 initIndicatorBanner(movie.size)
                 upComingAdapter.movies = movie.toMutableList()
             }
-        }
+        })
 
-        viewModel.statePopular.observe(viewLifecycleOwner) {
+        viewModel.statePopular.observe(viewLifecycleOwner, EventObserver {
             popularAdapter.state = it
-        }
-        viewModel.stateUpComing.observe(viewLifecycleOwner) {
+        })
+        viewModel.stateUpComing.observe(viewLifecycleOwner, EventObserver {
             upComingAdapter.state = it
-        }
-        viewModel.stateNowPlaying.observe(viewLifecycleOwner) {
+        })
+        viewModel.stateNowPlaying.observe(viewLifecycleOwner, EventObserver {
             nowPlayingAdapter.state = it
-        }
+        })
     }
 
     override fun initControls() {
         binding.banner.apply {
             adapter = upComingAdapter
             setPageTransformer(this)
-            initIndicatorBanner(1)
+            initIndicatorBanner(upComingAdapter.itemCount)
         }
 
         intiRecyclerView(binding.listPopular, popularAdapter)
