@@ -4,6 +4,7 @@ import com.example.mvvm.data.enum.MovieType
 import com.example.mvvm.data.mapper.NowPlayingMapper
 import com.example.mvvm.data.mapper.PopularMapper
 import com.example.mvvm.data.mapper.UpComingMapper
+import com.example.mvvm.data.model.MovieDetail
 import com.example.mvvm.data.model.Results
 import com.example.mvvm.data.model.home.NowPlaying
 import com.example.mvvm.data.model.home.Popular
@@ -14,7 +15,7 @@ import io.reactivex.Observable
 class MovieUseCase(
     private val movieRepository: MovieRepository = MovieRepository(),
     private val nowPlayingMapper: NowPlayingMapper = NowPlayingMapper(),
-    private val upComingMapper: UpComingMapper  = UpComingMapper(),
+    private val upComingMapper: UpComingMapper = UpComingMapper(),
     private val popularMapper: PopularMapper = PopularMapper()
 ) {
 
@@ -54,6 +55,10 @@ class MovieUseCase(
         return getMovie(type, page).map {
             upComingMapper.mapFrom(it)
         }
+    }
+
+    fun getMovieDetail(id: Int): Observable<MovieDetail> {
+        return movieRepository.getMovieDetail(id)
     }
 
     fun getMovieSearch(

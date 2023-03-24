@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/navigation_history"
+    app:startDestination="@id/historyFragment">
+
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.example.mvvm.ui.view.fragment.HistoryFragment"
+        android:label="HomeFragment">
+        <action
+            android:id="@+id/action_history_to_movieDetail"
+            app:destination="@id/historyMovieDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/historyMovieDetailFragment"
+        android:name="com.example.mvvm.ui.view.fragment.MovieDetailFragment"
+        android:label="MovieDetailFragment" />
+
+</navigation>

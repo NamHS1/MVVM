@@ -1,5 +1,6 @@
 package com.example.mvvm.data.service
 
+import com.example.mvvm.data.model.MovieDetail
 import com.example.mvvm.data.model.Results
 import io.reactivex.Observable
 import retrofit2.http.GET
@@ -17,8 +18,8 @@ interface ApiService {
     @GET("movie/now_playing")
     fun getNowPlayingMovies(@Query("page") page: Int): Observable<Results>
 
-//    @GET("movie/{movie_id}")
-//    fun getMovieDetail(@Path("movie_id") movieId: Int): Observable<MovieDetailReponse>
+    @GET("movie/{movie_id}")
+    fun getMovieDetail(@Path("movie_id") movieId: Int): Observable<MovieDetail>
 
     @GET("movie/{movie_id}/recommendations")
     fun getRecommendationMovies(@Path("movie_id") movieId: Int): Observable<Results>

@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -40,7 +41,9 @@ class HomeFragment(
         MovieAdapter(
             requireContext(),
             ItemMovieType.SMALL,
-            actionMoveDetail = {},
+            actionMoveDetail = {
+                controller.navigate(HomeFragmentDirections.actionHomeToMovieDetail())
+            },
             actionLoadMore = {
                 viewModel.getMoviesPopular()
             },
@@ -53,7 +56,9 @@ class HomeFragment(
         MovieAdapter(
             requireContext(),
             ItemMovieType.SMALL,
-            actionMoveDetail = {},
+            actionMoveDetail = {
+                controller.navigate(HomeFragmentDirections.actionHomeToMovieDetail())
+            },
             actionLoadMore = {
                 viewModel.getMoviesNowPlaying()
             },
@@ -66,12 +71,17 @@ class HomeFragment(
         MovieAdapter(
             requireContext(),
             ItemMovieType.BIG,
-            actionMoveDetail = {},
+            actionMoveDetail = {
+                controller.navigate(HomeFragmentDirections.actionHomeToMovieDetail())
+            },
             actionLoadMore = {},
             actionReload = {
                 viewModel.getMoviesUpComing()
             }
         )
+    }
+    private val controller by lazy {
+        findNavController()
     }
 
     override fun observeViewModel() {

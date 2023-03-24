@@ -2,7 +2,6 @@ package com.example.mvvm.ui.view.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -17,12 +16,14 @@ import com.example.mvvm.ui.view.adapter.viewholder.BigMovieViewHolder
 import com.example.mvvm.ui.view.adapter.viewholder.SmallMovieViewHolder
 
 class MovieAdapter(
-    private val context: Context,
+    context: Context,
     private val type: ItemMovieType,
-    private val actionMoveDetail: OnClickListener,
-    private val actionLoadMore: OnClickListener,
-    private val actionReload: OnClickListener,
+    private val actionMoveDetail: (Int) -> Unit,
+    private val actionLoadMore: () -> Unit,
+    private val actionReload: () -> Unit,
 ) : RecyclerView.Adapter<BaseViewHolder<MovieItem>>() {
+
+    private val layoutInflater: LayoutInflater = LayoutInflater.from(context)
 
     var movies: MutableList<MovieItem> = mutableListOf()
         set(value) {
@@ -40,7 +41,7 @@ class MovieAdapter(
         }
 
     override fun onBindViewHolder(holder: BaseViewHolder<MovieItem>, position: Int) {
-        if (position < itemCount - 1) {
+        if (position < itemCount - 1 || state == State.SUCCESS) {
             holder.bind(movies[position], State.SUCCESS)
         } else {
             holder.bind(null, state)
@@ -51,13 +52,12 @@ class MovieAdapter(
         return when (type) {
             ItemMovieType.SMALL -> {
                 val binding = DataBindingUtil.inflate<ItemSmallMovieBinding>(
-                    LayoutInflater.from(context),
+                    layoutInflater,
                     R.layout.item_small_movie,
                     parent,
                     false
                 )
                 SmallMovieViewHolder(
-                    context = context,
                     binding = binding,
                     actionReload = actionReload,
                     actionLoadMore = actionLoadMore,
@@ -67,13 +67,12 @@ class MovieAdapter(
 
             else -> {
                 val binding = DataBindingUtil.inflate<ItemBigMovieBinding>(
-                    LayoutInflater.from(context),
+                    layoutInflater,
                     R.layout.item_big_movie,
                     parent,
                     false
                 )
                 BigMovieViewHolder(
-                    context = context,
                     binding = binding,
                     actionReload = actionReload,
                     actionMoveDetail = actionMoveDetail

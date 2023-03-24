@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/navigation_favourite"
+    app:startDestination="@id/favouriteFragment">
+
+    <fragment
+        android:id="@+id/favouriteFragment"
+        android:name="com.example.mvvm.ui.view.fragment.FavouriteFragment"
+        android:label="HomeFragment" >
+        <action
+            android:id="@+id/action_favourite_to_movieDetail"
+            app:destination="@id/favouriteMovieDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/favouriteMovieDetailFragment"
+        android:name="com.example.mvvm.ui.view.fragment.MovieDetailFragment"
+        android:label="MovieDetailFragment" />
+
+</navigation>
