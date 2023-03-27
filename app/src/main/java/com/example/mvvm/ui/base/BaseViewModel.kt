@@ -1,5 +1,6 @@
 package com.example.mvvm.ui.base
 
+import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import com.example.mvvm.data.enum.State
 import io.reactivex.Observable
@@ -37,4 +38,6 @@ abstract class BaseViewModel : ViewModel() {
     }
 
     override fun onCleared() = compositeDisposable.dispose()
+
+    open fun getArguments(bundle: Bundle) {}
 }

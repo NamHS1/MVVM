@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.mvvm.R
 import com.example.mvvm.data.enum.ItemMovieType
-import com.example.mvvm.data.model.MovieItem
 import com.example.mvvm.databinding.FragmentHomeBinding
+import com.example.mvvm.extension.orEmpty
 import com.example.mvvm.ui.base.BaseFragment
 import com.example.mvvm.ui.view.adapter.MovieAdapter
 import com.example.mvvm.ui.viewmodel.HomeViewModel
@@ -42,7 +42,7 @@ class HomeFragment(
             requireContext(),
             ItemMovieType.SMALL,
             actionMoveDetail = {
-                controller.navigate(HomeFragmentDirections.actionHomeToMovieDetail())
+                controller.navigate(HomeFragmentDirections.actionHomeToMovieDetail(id = it))
             },
             actionLoadMore = {
                 viewModel.getMoviesPopular()
@@ -57,7 +57,7 @@ class HomeFragment(
             requireContext(),
             ItemMovieType.SMALL,
             actionMoveDetail = {
-                controller.navigate(HomeFragmentDirections.actionHomeToMovieDetail())
+                controller.navigate(HomeFragmentDirections.actionHomeToMovieDetail(id = it))
             },
             actionLoadMore = {
                 viewModel.getMoviesNowPlaying()
@@ -72,7 +72,7 @@ class HomeFragment(
             requireContext(),
             ItemMovieType.BIG,
             actionMoveDetail = {
-                controller.navigate(HomeFragmentDirections.actionHomeToMovieDetail())
+                controller.navigate(HomeFragmentDirections.actionHomeToMovieDetail(id = it))
             },
             actionLoadMore = {},
             actionReload = {
@@ -86,15 +86,15 @@ class HomeFragment(
 
     override fun observeViewModel() {
         viewModel.moviesNowPlaying.observe(viewLifecycleOwner, EventObserver {
-            nowPlayingAdapter.movies = it.movies?.toMutableList() as MutableList<MovieItem>
+            nowPlayingAdapter.movies = it.movies.orEmpty()
         })
         viewModel.moviesPopular.observe(viewLifecycleOwner, EventObserver {
-            popularAdapter.movies = it.movies?.toMutableList() as MutableList<MovieItem>
+            popularAdapter.movies = it.movies.orEmpty()
         })
         viewModel.moviesUpComing.observe(viewLifecycleOwner, EventObserver {
             it.movies?.let { movie ->
                 initIndicatorBanner(movie.size)
-                upComingAdapter.movies = movie.toMutableList()
+                upComingAdapter.movies = movie.orEmpty()
             }
         })
 
@@ -112,6 +112,8 @@ class HomeFragment(
     override fun initControls() {
         binding.banner.apply {
             adapter = upComingAdapter
+            isNestedScrollingEnabled = false
+
             setPageTransformer(this)
             initIndicatorBanner(upComingAdapter.itemCount)
         }
@@ -162,9 +164,11 @@ class HomeFragment(
 
     private fun intiRecyclerView(recyclerView: RecyclerView, movieAdapter: MovieAdapter) {
         recyclerView.apply {
-            setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = movieAdapter
+
+            isNestedScrollingEnabled = false
+            setHasFixedSize(true)
         }
     }
 

@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/favouriteFragment"
         android:name="com.example.mvvm.ui.view.fragment.FavouriteFragment"
-        android:label="HomeFragment" >
+        android:label="HomeFragment">
         <action
             android:id="@+id/action_favourite_to_movieDetail"
             app:destination="@id/favouriteMovieDetailFragment" />
@@ -15,6 +15,11 @@
     <fragment
         android:id="@+id/favouriteMovieDetailFragment"
         android:name="com.example.mvvm.ui.view.fragment.MovieDetailFragment"
-        android:label="MovieDetailFragment" />
+        android:label="MovieDetailFragment">
+        <argument
+            android:name="id"
+            android:defaultValue="0"
+            app:argType="integer" />
+    </fragment>
 
 </navigation>

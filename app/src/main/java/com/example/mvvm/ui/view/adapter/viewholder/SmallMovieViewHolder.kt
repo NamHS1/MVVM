@@ -16,7 +16,7 @@ class SmallMovieViewHolder(
     private val actionLoadMore: () -> Unit
 ) : BaseViewHolder<MovieItem>(binding.root) {
 
-    override fun bind(model: MovieItem?, state: State) {
+    override fun bind(model: MovieItem?, position: Int, state: State) {
         binding.apply {
             image.apply {
                 val margin = context.resources.getDimensionPixelSize(R.dimen.margin)

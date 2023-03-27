@@ -10,24 +10,26 @@ import com.example.mvvm.data.model.home.NowPlaying
 import com.example.mvvm.data.model.home.Popular
 import com.example.mvvm.data.model.home.UpComing
 import com.example.mvvm.data.repository.MovieRepository
+import com.example.mvvm.data.repository.PrefRepository
+import com.example.mvvm.extension.orEmpty
+import com.example.mvvm.util.Constant
 import io.reactivex.Observable
 
-class MovieUseCase(
-    private val movieRepository: MovieRepository = MovieRepository(),
-    private val nowPlayingMapper: NowPlayingMapper = NowPlayingMapper(),
-    private val upComingMapper: UpComingMapper = UpComingMapper(),
+object MovieUseCase {
+
+    private val nowPlayingMapper: NowPlayingMapper = NowPlayingMapper()
+    private val upComingMapper: UpComingMapper = UpComingMapper()
     private val popularMapper: PopularMapper = PopularMapper()
-) {
 
     private fun getMovie(
         type: MovieType,
         page: Int,
         keyWord: String? = null
     ): Observable<Results> = when (type) {
-        MovieType.NOW_PLAYING -> movieRepository.getNowPlayingMovies(page)
-        MovieType.POPULAR -> movieRepository.getPopularMovies(page)
-        MovieType.SEARCH -> movieRepository.searchMovie(keyWord.orEmpty(), page)
-        else -> movieRepository.getUpComingMovies(page)
+        MovieType.NOW_PLAYING -> MovieRepository.getNowPlayingMovies(page)
+        MovieType.POPULAR -> MovieRepository.getPopularMovies(page)
+        MovieType.SEARCH -> MovieRepository.searchMovie(keyWord.orEmpty(), page)
+        else -> MovieRepository.getUpComingMovies(page)
     }
 
     fun getMoviesNowPlaying(
@@ -58,7 +60,7 @@ class MovieUseCase(
     }
 
     fun getMovieDetail(id: Int): Observable<MovieDetail> {
-        return movieRepository.getMovieDetail(id)
+        return MovieRepository.getMovieDetail(id)
     }
 
     fun getMovieSearch(
@@ -90,4 +92,53 @@ class MovieUseCase(
         } ?: 1
     }
 
+    fun getListFavorite(): List<MovieDetail> = PrefRepository.getListMovie(Constant.PREF_FAVORITE).orEmpty()
+
+    fun isFavorite(id: Int): Boolean {
+        val listHistory: List<MovieDetail> = PrefRepository.getListMovie(Constant.PREF_FAVORITE).orEmpty()
+        listHistory.find { it.id == id }.also {
+           return it != null
+        }
+    }
+    fun addFavorite(movieDetail: MovieDetail) = PrefRepository.apply {
+        val listHistory: MutableList<MovieDetail> = getListMovie(Constant.PREF_FAVORITE).orEmpty()
+        if (listHistory.isEmpty()) {
+            listHistory.add(movieDetail)
+        } else {
+            listHistory.find { it.id == movieDetail.id }.also {
+                if (it == null) {
+                    listHistory.add(movieDetail)
+                }
+            }
+        }
+        putListMovie(Constant.PREF_FAVORITE, listHistory)
+    }
+
+    fun removeFavorite(id: Int) = PrefRepository.apply {
+        val listHistory: MutableList<MovieDetail> = getListMovie(Constant.PREF_FAVORITE).orEmpty()
+        listHistory.find { it.id == id }.also {
+            it?.let {
+                listHistory.remove(it)
+            }
+        }
+        putListMovie(Constant.PREF_FAVORITE, listHistory)
+    }
+
+    fun getHistory(): List<MovieDetail> = PrefRepository.getListMovie(Constant.PREF_HISTORY).orEmpty()
+
+    fun addHistory(movieDetail: MovieDetail) = PrefRepository.apply {
+        val listHistory: MutableList<MovieDetail> = getListMovie(Constant.PREF_HISTORY).orEmpty()
+        if (listHistory.isEmpty()) {
+            listHistory.add(movieDetail)
+        } else {
+            listHistory.find { it.id == movieDetail.id }.also {
+                if (it == null) {
+                    listHistory.add(movieDetail)
+                }
+            }
+        }
+        putListMovie(Constant.PREF_HISTORY, listHistory)
+    }
+
+    fun clearAllHistory() = PrefRepository.removeListMovie(Constant.PREF_HISTORY)
 }

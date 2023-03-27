@@ -10,27 +10,31 @@ import com.example.mvvm.data.model.home.UpComing
 import com.example.mvvm.data.usecase.MovieUseCase
 import com.example.mvvm.util.Event
 
-class HomeViewModel(
-    private val moviesUseCase: MovieUseCase = MovieUseCase(),
-    private var _moviesNowPlaying: MutableLiveData<Event<NowPlaying>> = MutableLiveData<Event<NowPlaying>>(),
-    private var _moviesUpComing: MutableLiveData<Event<UpComing>> = MutableLiveData<Event<UpComing>>(),
-    private var _moviesPopular: MutableLiveData<Event<Popular>> = MutableLiveData<Event<Popular>>(),
-    private var _stateNowPlaying: MutableLiveData<Event<State>> = MutableLiveData<Event<State>>(),
-    private var _stateUpComing: MutableLiveData<Event<State>> = MutableLiveData<Event<State>>(),
-    private var _statePopular: MutableLiveData<Event<State>> = MutableLiveData<Event<State>>(),
-) : BaseViewModel() {
+class HomeViewModel : BaseViewModel() {
 
+    private var _moviesNowPlaying: MutableLiveData<Event<NowPlaying>> =
+        MutableLiveData<Event<NowPlaying>>()
     val moviesNowPlaying: LiveData<Event<NowPlaying>>
         get() = _moviesNowPlaying
+
+    private var _moviesUpComing: MutableLiveData<Event<UpComing>> =
+        MutableLiveData<Event<UpComing>>()
     val moviesUpComing: LiveData<Event<UpComing>>
         get() = _moviesUpComing
+
+    private var _moviesPopular: MutableLiveData<Event<Popular>> = MutableLiveData<Event<Popular>>()
     val moviesPopular: LiveData<Event<Popular>>
         get() = _moviesPopular
 
+    private var _stateNowPlaying: MutableLiveData<Event<State>> = MutableLiveData<Event<State>>()
     val stateNowPlaying: LiveData<Event<State>>
         get() = _stateNowPlaying
+
+    private var _stateUpComing: MutableLiveData<Event<State>> = MutableLiveData<Event<State>>()
     val stateUpComing: LiveData<Event<State>>
         get() = _stateUpComing
+
+    private var _statePopular: MutableLiveData<Event<State>> = MutableLiveData<Event<State>>()
     val statePopular: LiveData<Event<State>>
         get() = _statePopular
 
@@ -41,7 +45,7 @@ class HomeViewModel(
     }
 
     fun getMoviesNowPlaying() {
-        moviesUseCase.apply {
+        MovieUseCase.apply {
             val nowPlaying: NowPlaying? = _moviesNowPlaying.value?.peekContent()
             getMoviesNowPlaying(page = getPageNowPlaying(nowPlaying)).fetchData(
                 success = {
@@ -60,7 +64,7 @@ class HomeViewModel(
     }
 
     fun getMoviesPopular() {
-        moviesUseCase.apply {
+        MovieUseCase.apply {
             val popular: Popular? = _moviesPopular.value?.peekContent()
             getMoviesPopular(page = getPagePopular(popular)).fetchData(
                 success = {
@@ -78,7 +82,7 @@ class HomeViewModel(
     }
 
     fun getMoviesUpComing(page: Int = 1) {
-        moviesUseCase.getMoviesUpComing(page = page).fetchData(
+        MovieUseCase.getMoviesUpComing(page = page).fetchData(
             success = {
                 _moviesUpComing.value = Event(it)
             },

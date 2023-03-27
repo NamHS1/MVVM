@@ -23,3 +23,7 @@ fun ViewGroup.onVisibility(vararg views: View) {
         }
     }
 }
+
+fun <T> List<T>?.orEmpty() : MutableList<T> {
+    return this?.toMutableList() ?: mutableListOf()
+}

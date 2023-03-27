@@ -42,9 +42,9 @@ class MovieAdapter(
 
     override fun onBindViewHolder(holder: BaseViewHolder<MovieItem>, position: Int) {
         if (position < itemCount - 1 || state == State.SUCCESS) {
-            holder.bind(movies[position], State.SUCCESS)
+            holder.bind(movies[position], state = State.SUCCESS)
         } else {
-            holder.bind(null, state)
+            holder.bind(null, state = state)
         }
     }
 

@@ -3,7 +3,9 @@
     <string name="play_now">Play Now !</string>
     <string name="popular">Popular</string>
     <string name="home">Home</string>
-    <string name="favourite">Favourite</string>
+    <string name="favorite">Favorite</string>
     <string name="history">History</string>
-
+    <string name="clear_all">Clear ALL</string>
+    <string name="no_history">No history</string>
+    <string name="no_favorite">No favorite</string>
 </resources>

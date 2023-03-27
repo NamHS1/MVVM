@@ -15,5 +15,10 @@
     <fragment
         android:id="@+id/homeMovieDetailFragment"
         android:name="com.example.mvvm.ui.view.fragment.MovieDetailFragment"
-        android:label="MovieDetailFragment" />
+        android:label="MovieDetailFragment">
+        <argument
+            android:name="id"
+            android:defaultValue="0"
+            app:argType="integer" />
+    </fragment>
 </navigation>

@@ -27,9 +27,15 @@ abstract class BaseFragment<DB : ViewDataBinding, VM : BaseViewModel> : Fragment
 
     protected abstract fun initEvent()
 
+    protected open fun fetchData() {}
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, viewModelFactory)[classTypeOfViewModel]
+
+        arguments?.let {
+            viewModel.getArguments(it)
+        }
     }
 
     override fun onCreateView(
@@ -47,5 +53,6 @@ abstract class BaseFragment<DB : ViewDataBinding, VM : BaseViewModel> : Fragment
         observeViewModel()
         initControls()
         initEvent()
+        fetchData()
     }
 }

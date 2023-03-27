@@ -14,7 +14,7 @@ class BigMovieViewHolder(
     private val actionReload: () -> Unit,
 ) : BaseViewHolder<MovieItem>(binding.root) {
 
-    override fun bind(model: MovieItem?, state: State) {
+    override fun bind(model: MovieItem?, position: Int, state: State) {
         binding.apply {
             when (state) {
                 State.LOADING -> {
