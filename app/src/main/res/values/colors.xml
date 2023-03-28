@@ -9,5 +9,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="athens_ray">#E9E9EC</color>
     <color name="light_gray">#D3D3D3</color>
+    <color name="yellow">#EBE5B7</color>
+    <color name="silver">#C6C4C4</color>
+    <color name="text_color">#454545</color>
 
 </resources>

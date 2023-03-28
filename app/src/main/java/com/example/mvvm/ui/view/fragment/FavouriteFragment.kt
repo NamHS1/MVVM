@@ -3,6 +3,7 @@ package com.example.mvvm.ui.view.fragment
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mvvm.R
@@ -30,11 +31,15 @@ class FavouriteFragment(
 
 ) : BaseFragment<FragmentFavouriteBinding, FavouriteViewModel>() {
 
+    private val controller: NavController by lazy {
+        findNavController()
+    }
+
     private val favoriteAdapter: FavoriteAdapter by lazy {
         FavoriteAdapter(
             requireContext(),
             actionMoveDetail = {
-                findNavController().navigate(FavouriteFragmentDirections.actionFavouriteToMovieDetail(id = it))
+                controller.navigate(FavouriteFragmentDirections.actionFavouriteToMovieDetail(id = it))
             },
             actionFavorite = { position, id ->
                 viewModel.removeFavorite(
@@ -54,9 +59,9 @@ class FavouriteFragment(
         viewModel.liveData.observe(viewLifecycleOwner) {
             binding.apply {
                 if (it == null || it.isEmpty()) {
-                    (container as ViewGroup).onVisibility(noFavorite)
+                    (container as ViewGroup).onVisibility(noFavorite, titleHeader)
                 } else {
-                    (container as ViewGroup).onVisibility(listFavorite)
+                    (container as ViewGroup).onVisibility(listFavorite, titleHeader)
                 }
                 favoriteAdapter.movies = it.toMutableList()
             }

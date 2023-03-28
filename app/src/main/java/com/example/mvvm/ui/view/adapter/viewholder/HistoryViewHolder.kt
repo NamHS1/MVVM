@@ -6,6 +6,7 @@ import com.example.mvvm.data.model.MovieDetail
 import com.example.mvvm.databinding.ItemHistoryBinding
 import com.example.mvvm.extension.orW600xH900
 import com.example.mvvm.extension.orZero
+import com.example.mvvm.extension.rating
 import com.example.mvvm.ui.base.BaseViewHolder
 
 class HistoryViewHolder(
@@ -17,7 +18,7 @@ class HistoryViewHolder(
             model?.let {model ->
                 title.text = model.title
                 releaseDate.text = model.releaseDate
-                voteAverage.rating = (model.voteAverage?.toFloat() ?: 0) as Float
+                voteAverage.rating = model.voteAverage.rating()
 
                 Glide.with(context)
                     .load(model.posterPath.orW600xH900())

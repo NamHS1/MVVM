@@ -42,9 +42,9 @@ class HistoryFragment(
         viewModel.liveData.observe(viewLifecycleOwner) {
             binding.apply {
                 if (it == null || it.isEmpty()) {
-                    (container as ViewGroup).onVisibility(noHistory)
+                    (container as ViewGroup).onVisibility(noHistory, titleHeader)
                 } else {
-                    (container as ViewGroup).onVisibility(clearHistory, listHistory)
+                    (container as ViewGroup).onVisibility(clearHistory, listHistory, titleHeader)
                 }
                 historyAdapter.movies = it.toMutableList()
             }

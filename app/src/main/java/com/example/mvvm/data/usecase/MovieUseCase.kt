@@ -92,14 +92,17 @@ object MovieUseCase {
         } ?: 1
     }
 
-    fun getListFavorite(): List<MovieDetail> = PrefRepository.getListMovie(Constant.PREF_FAVORITE).orEmpty()
+    fun getListFavorite(): List<MovieDetail> =
+        PrefRepository.getListMovie(Constant.PREF_FAVORITE).orEmpty().reversed()
 
     fun isFavorite(id: Int): Boolean {
-        val listHistory: List<MovieDetail> = PrefRepository.getListMovie(Constant.PREF_FAVORITE).orEmpty()
+        val listHistory: List<MovieDetail> =
+            PrefRepository.getListMovie(Constant.PREF_FAVORITE).orEmpty()
         listHistory.find { it.id == id }.also {
-           return it != null
+            return it != null
         }
     }
+
     fun addFavorite(movieDetail: MovieDetail) = PrefRepository.apply {
         val listHistory: MutableList<MovieDetail> = getListMovie(Constant.PREF_FAVORITE).orEmpty()
         if (listHistory.isEmpty()) {
@@ -124,17 +127,17 @@ object MovieUseCase {
         putListMovie(Constant.PREF_FAVORITE, listHistory)
     }
 
-    fun getHistory(): List<MovieDetail> = PrefRepository.getListMovie(Constant.PREF_HISTORY).orEmpty()
+    fun getHistory(): List<MovieDetail> =
+        PrefRepository.getListMovie(Constant.PREF_HISTORY).orEmpty().reversed()
 
     fun addHistory(movieDetail: MovieDetail) = PrefRepository.apply {
         val listHistory: MutableList<MovieDetail> = getListMovie(Constant.PREF_HISTORY).orEmpty()
         if (listHistory.isEmpty()) {
             listHistory.add(movieDetail)
         } else {
-            listHistory.find { it.id == movieDetail.id }.also {
-                if (it == null) {
-                    listHistory.add(movieDetail)
-                }
+            val movieFirst: MovieDetail = listHistory.last()
+            if (movieFirst.id != movieDetail.id) {
+                listHistory.add(movieDetail)
             }
         }
         putListMovie(Constant.PREF_HISTORY, listHistory)

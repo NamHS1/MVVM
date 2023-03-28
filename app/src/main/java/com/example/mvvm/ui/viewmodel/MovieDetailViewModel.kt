@@ -7,6 +7,7 @@ import com.example.mvvm.data.enum.State
 import com.example.mvvm.data.model.MovieDetail
 import com.example.mvvm.data.usecase.MovieUseCase
 import com.example.mvvm.ui.base.BaseViewModel
+import com.example.mvvm.util.Constant
 
 class MovieDetailViewModel : BaseViewModel() {
 
@@ -22,13 +23,15 @@ class MovieDetailViewModel : BaseViewModel() {
     val favourite: LiveData<Boolean>
         get() = _favorite
 
-    var id: Int = 0
+    private var _id: Int = 0
         set(value) {
             field = value
             getMovieDetail(value)
         }
+    val id: Int
+        get() = _id
 
-    private fun getMovieDetail(id: Int) {
+    fun getMovieDetail(id: Int) {
         MovieUseCase.getMovieDetail(id).fetchData(
             success = {
                 _liveData.value = it
@@ -41,7 +44,7 @@ class MovieDetailViewModel : BaseViewModel() {
     }
 
     override fun getArguments(bundle: Bundle) {
-        id = bundle.getInt("id", 0)
+        _id = bundle.getInt(Constant.ID, 0)
     }
 
     fun checkFavorite(id: Int) {
