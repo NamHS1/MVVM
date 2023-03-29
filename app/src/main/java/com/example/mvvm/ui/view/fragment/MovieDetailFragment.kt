@@ -5,8 +5,6 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.mvvm.MovieApplication
@@ -29,16 +27,8 @@ import com.google.android.material.chip.Chip
 class MovieDetailFragment(
 
     override var layoutResId: Int = R.layout.fragment_movie_detail,
-    override var classTypeOfViewModel: Class<MovieDetailViewModel> = MovieDetailViewModel::class.java,
-    override var viewModelFactory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(classTypeOfViewModel)) {
-                @Suppress("UNCHECKED_CAST")
-                return MovieDetailViewModel() as T
-            }
-            throw IllegalArgumentException("Unable construct viewModel")
-        }
-    }
+
+    override var classTypeOfViewModel: Class<MovieDetailViewModel> = MovieDetailViewModel::class.java
 
 ) : BaseFragment<FragmentMovieDetailBinding, MovieDetailViewModel>() {
 

@@ -1,8 +1,6 @@
 package com.example.mvvm.ui.view.fragment
 
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mvvm.R
@@ -13,17 +11,11 @@ import com.example.mvvm.ui.view.adapter.HistoryAdapter
 import com.example.mvvm.ui.viewmodel.HistoryViewModel
 
 class HistoryFragment(
+
     override var layoutResId: Int = R.layout.fragment_history,
-    override var classTypeOfViewModel: Class<HistoryViewModel> = HistoryViewModel::class.java,
-    override var viewModelFactory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(classTypeOfViewModel)) {
-                @Suppress("UNCHECKED_CAST")
-                return HistoryViewModel() as T
-            }
-            throw IllegalArgumentException("Unable construct viewModel")
-        }
-    }
+
+    override var classTypeOfViewModel: Class<HistoryViewModel> = HistoryViewModel::class.java
+
 ) : BaseFragment<FragmentHistoryBinding, HistoryViewModel>() {
 
     private val historyAdapter: HistoryAdapter by lazy {

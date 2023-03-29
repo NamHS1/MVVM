@@ -1,8 +1,6 @@
 package com.example.mvvm.ui.view.fragment
 
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,17 +15,7 @@ class FavouriteFragment(
 
     override var layoutResId: Int = R.layout.fragment_favourite,
 
-    override var classTypeOfViewModel: Class<FavouriteViewModel> = FavouriteViewModel::class.java,
-
-    override var viewModelFactory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(classTypeOfViewModel)) {
-                @Suppress("UNCHECKED_CAST")
-                return FavouriteViewModel() as T
-            }
-            throw IllegalArgumentException("Unable construct viewModel")
-        }
-    }
+    override var classTypeOfViewModel: Class<FavouriteViewModel> = FavouriteViewModel::class.java
 
 ) : BaseFragment<FragmentFavouriteBinding, FavouriteViewModel>() {
 

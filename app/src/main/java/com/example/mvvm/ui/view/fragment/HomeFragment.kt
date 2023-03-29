@@ -4,8 +4,6 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,17 +21,7 @@ class HomeFragment(
 
     override var layoutResId: Int = R.layout.fragment_home,
 
-    override var classTypeOfViewModel: Class<HomeViewModel> = HomeViewModel::class.java,
-
-    override var viewModelFactory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(classTypeOfViewModel)) {
-                @Suppress("UNCHECKED_CAST")
-                return HomeViewModel() as T
-            }
-            throw IllegalArgumentException("Unable construct viewModel")
-        }
-    }
+    override var classTypeOfViewModel: Class<HomeViewModel> = HomeViewModel::class.java
 
 ) : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
 

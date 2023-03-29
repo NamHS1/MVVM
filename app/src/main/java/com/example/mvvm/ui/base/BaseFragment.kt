@@ -19,8 +19,6 @@ abstract class BaseFragment<DB : ViewDataBinding, VM : BaseViewModel> : Fragment
 
     protected abstract var classTypeOfViewModel: Class<VM>
 
-    protected abstract var viewModelFactory: ViewModelProvider.Factory
-
     protected abstract fun observeViewModel()
 
     protected abstract fun initControls()
@@ -31,7 +29,7 @@ abstract class BaseFragment<DB : ViewDataBinding, VM : BaseViewModel> : Fragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, viewModelFactory)[classTypeOfViewModel]
+        viewModel = ViewModelProvider(this)[classTypeOfViewModel]
 
         arguments?.let {
             viewModel.getArguments(it)

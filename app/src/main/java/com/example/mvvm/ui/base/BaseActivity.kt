@@ -16,8 +16,6 @@ abstract class BaseActivity<DB : ViewDataBinding, VM : BaseViewModel> : AppCompa
 
     protected abstract var classTypeOfViewModel: Class<VM>
 
-    protected abstract var viewModelFactory: ViewModelProvider.Factory
-
     protected abstract fun observeViewModel()
 
     protected abstract fun initControls()
@@ -29,7 +27,7 @@ abstract class BaseActivity<DB : ViewDataBinding, VM : BaseViewModel> : AppCompa
         binding = DataBindingUtil.setContentView(this, layoutResId)
         binding.lifecycleOwner = this
 
-        viewModel = ViewModelProvider(this, viewModelFactory)[classTypeOfViewModel]
+        viewModel = ViewModelProvider(this)[classTypeOfViewModel]
 
         observeViewModel()
 
