@@ -3,11 +3,15 @@ package com.example.mvvm.ui.viewmodel
 import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.mvvm.data.enum.State
+import androidx.lifecycle.viewModelScope
+import com.example.mvvm.data.database.entity.Favorite
+import com.example.mvvm.data.enumtype.State
+import com.example.mvvm.data.mapper.FavoriteMapper
 import com.example.mvvm.data.model.MovieDetail
 import com.example.mvvm.data.usecase.MovieUseCase
 import com.example.mvvm.ui.base.BaseViewModel
 import com.example.mvvm.util.Constant
+import kotlinx.coroutines.launch
 
 class MovieDetailViewModel : BaseViewModel() {
 
@@ -19,10 +23,6 @@ class MovieDetailViewModel : BaseViewModel() {
     val stateMovieDetail: LiveData<State>
         get() = _stateMovieDetail
 
-    private var _favorite: MutableLiveData<Boolean> = MutableLiveData()
-    val favourite: LiveData<Boolean>
-        get() = _favorite
-
     private var _id: Int = 0
         set(value) {
             field = value
@@ -31,6 +31,7 @@ class MovieDetailViewModel : BaseViewModel() {
     val id: Int
         get() = _id
 
+    fun favorite(): LiveData<Favorite> = MovieUseCase.getFavorite(id)
     fun getMovieDetail(id: Int) {
         MovieUseCase.getMovieDetail(id).fetchData(
             success = {
@@ -47,23 +48,25 @@ class MovieDetailViewModel : BaseViewModel() {
         _id = bundle.getInt(Constant.ID, 0)
     }
 
-    fun checkFavorite(id: Int) {
-        _favorite.value = MovieUseCase.isFavorite(id)
-    }
-
     fun handleFavorite(isChecked: Boolean) {
-        if (isChecked) {
-            _liveData.value?.let { addFavorite(it) }
-        } else {
-            removeFavorite(id)
+        _liveData.value?.let {
+            if (isChecked) {
+                insertFavorite(it)
+            } else {
+                deleteFavorite(it)
+            }
         }
-
-        _favorite.value = isChecked
+        // update favorite state
+        favorite()
     }
 
     fun addHistory(movieDetail: MovieDetail) = MovieUseCase.addHistory(movieDetail)
 
-    private fun addFavorite(movieDetail: MovieDetail) = MovieUseCase.addFavorite(movieDetail)
+    private fun insertFavorite(movieDetail: MovieDetail) = viewModelScope.launch {
+        MovieUseCase.insertFavorite(FavoriteMapper.mapFrom(movieDetail))
+    }
 
-    private fun removeFavorite(id: Int) = MovieUseCase.removeFavorite(id)
+    private fun deleteFavorite(movieDetail: MovieDetail) = viewModelScope.launch {
+        MovieUseCase.deleteFavorite(FavoriteMapper.mapFrom(movieDetail))
+    }
 }

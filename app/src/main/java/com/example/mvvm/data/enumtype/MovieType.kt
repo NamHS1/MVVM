@@ -1,4 +1,4 @@
-package com.example.mvvm.data.enum
+package com.example.mvvm.data.enumtype
 
 enum class MovieType {
     POPULAR,

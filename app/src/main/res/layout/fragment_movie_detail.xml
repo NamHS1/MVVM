@@ -24,7 +24,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
-                    app:constraint_referenced_ids="backdrop_area, content, area_vote"
+                    app:constraint_referenced_ids="content, area_vote, area_backdrop"
+                    tools:ignore="UnknownId"
                     tools:visibility="visible" />
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -38,7 +39,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.cardview.widget.CardView
-                    android:id="@id/backdrop_area"
+                    android:id="@id/area_backdrop"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_margin="5dp"
@@ -51,12 +52,11 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <ImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/image_backdrop"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:adjustViewBounds="true"
-                        android:contentDescription="@null" />
+                        android:adjustViewBounds="true" />
 
                 </androidx.cardview.widget.CardView>
 
@@ -70,7 +70,7 @@
                     android:translationY="-45dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/btn_back"
-                    app:layout_constraintTop_toBottomOf="@+id/backdrop_area">
+                    app:layout_constraintTop_toBottomOf="@+id/area_backdrop">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/vote"
@@ -207,6 +207,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
+                        android:scrollbars="none"
                         android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

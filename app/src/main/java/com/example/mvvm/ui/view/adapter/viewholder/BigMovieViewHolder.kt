@@ -2,7 +2,7 @@ package com.example.mvvm.ui.view.adapter.viewholder
 
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
-import com.example.mvvm.data.enum.State
+import com.example.mvvm.data.enumtype.State
 import com.example.mvvm.data.model.MovieItem
 import com.example.mvvm.databinding.ItemBigMovieBinding
 import com.example.mvvm.extension.onVisibility

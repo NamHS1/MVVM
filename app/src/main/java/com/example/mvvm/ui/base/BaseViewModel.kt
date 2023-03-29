@@ -2,7 +2,7 @@ package com.example.mvvm.ui.base
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
-import com.example.mvvm.data.enum.State
+import com.example.mvvm.data.enumtype.State
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

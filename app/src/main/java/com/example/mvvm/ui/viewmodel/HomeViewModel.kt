@@ -2,7 +2,7 @@ package com.example.mvvm.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.mvvm.data.enum.State
+import com.example.mvvm.data.enumtype.State
 import com.example.mvvm.ui.base.BaseViewModel
 import com.example.mvvm.data.model.home.NowPlaying
 import com.example.mvvm.data.model.home.Popular
@@ -12,13 +12,11 @@ import com.example.mvvm.util.Event
 
 class HomeViewModel : BaseViewModel() {
 
-    private var _moviesNowPlaying: MutableLiveData<Event<NowPlaying>> =
-        MutableLiveData<Event<NowPlaying>>()
+    private var _moviesNowPlaying: MutableLiveData<Event<NowPlaying>> = MutableLiveData<Event<NowPlaying>>()
     val moviesNowPlaying: LiveData<Event<NowPlaying>>
         get() = _moviesNowPlaying
 
-    private var _moviesUpComing: MutableLiveData<Event<UpComing>> =
-        MutableLiveData<Event<UpComing>>()
+    private var _moviesUpComing: MutableLiveData<Event<UpComing>> = MutableLiveData<Event<UpComing>>()
     val moviesUpComing: LiveData<Event<UpComing>>
         get() = _moviesUpComing
 

@@ -1,6 +1,8 @@
 package com.example.mvvm.data.usecase
 
-import com.example.mvvm.data.enum.MovieType
+import androidx.lifecycle.LiveData
+import com.example.mvvm.data.database.entity.Favorite
+import com.example.mvvm.data.enumtype.MovieType
 import com.example.mvvm.data.mapper.NowPlayingMapper
 import com.example.mvvm.data.mapper.PopularMapper
 import com.example.mvvm.data.mapper.UpComingMapper
@@ -9,6 +11,7 @@ import com.example.mvvm.data.model.Results
 import com.example.mvvm.data.model.home.NowPlaying
 import com.example.mvvm.data.model.home.Popular
 import com.example.mvvm.data.model.home.UpComing
+import com.example.mvvm.data.repository.FavoriteLocalRepository
 import com.example.mvvm.data.repository.MovieRepository
 import com.example.mvvm.data.repository.PrefRepository
 import com.example.mvvm.extension.orEmpty
@@ -92,40 +95,12 @@ object MovieUseCase {
         } ?: 1
     }
 
-    fun getListFavorite(): List<MovieDetail> =
-        PrefRepository.getListMovie(Constant.PREF_FAVORITE).orEmpty().reversed()
+    fun getFavorites(): LiveData<List<Favorite>> = FavoriteLocalRepository.getFavorites()
 
-    fun isFavorite(id: Int): Boolean {
-        val listHistory: List<MovieDetail> =
-            PrefRepository.getListMovie(Constant.PREF_FAVORITE).orEmpty()
-        listHistory.find { it.id == id }.also {
-            return it != null
-        }
-    }
+    fun getFavorite(id: Int): LiveData<Favorite> = FavoriteLocalRepository.getFavorite(id)
+    suspend fun insertFavorite(favorite: Favorite) = FavoriteLocalRepository.insert(favorite)
 
-    fun addFavorite(movieDetail: MovieDetail) = PrefRepository.apply {
-        val listHistory: MutableList<MovieDetail> = getListMovie(Constant.PREF_FAVORITE).orEmpty()
-        if (listHistory.isEmpty()) {
-            listHistory.add(movieDetail)
-        } else {
-            listHistory.find { it.id == movieDetail.id }.also {
-                if (it == null) {
-                    listHistory.add(movieDetail)
-                }
-            }
-        }
-        putListMovie(Constant.PREF_FAVORITE, listHistory)
-    }
-
-    fun removeFavorite(id: Int) = PrefRepository.apply {
-        val listHistory: MutableList<MovieDetail> = getListMovie(Constant.PREF_FAVORITE).orEmpty()
-        listHistory.find { it.id == id }.also {
-            it?.let {
-                listHistory.remove(it)
-            }
-        }
-        putListMovie(Constant.PREF_FAVORITE, listHistory)
-    }
+    suspend fun deleteFavorite(favorite: Favorite) = FavoriteLocalRepository.delete(favorite)
 
     fun getHistory(): List<MovieDetail> =
         PrefRepository.getListMovie(Constant.PREF_HISTORY).orEmpty().reversed()

@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.mvvm.MovieApplication
 import com.example.mvvm.R
-import com.example.mvvm.data.enum.State
+import com.example.mvvm.data.enumtype.State
 import com.example.mvvm.data.model.Companies
 import com.example.mvvm.data.model.Genre
 import com.example.mvvm.data.model.MovieDetail
@@ -42,10 +42,6 @@ class MovieDetailFragment(
 
 ) : BaseFragment<FragmentMovieDetailBinding, MovieDetailViewModel>() {
 
-    override fun fetchData() {
-        viewModel.checkFavorite(viewModel.id)
-    }
-
     override fun observeViewModel() {
         viewModel.liveData.observe(viewLifecycleOwner) {
             it?.let {
@@ -63,8 +59,8 @@ class MovieDetailFragment(
                 }
             }
         }
-        viewModel.favourite.observe(viewLifecycleOwner) {
-            binding.favourite.isChecked = it
+        viewModel.favorite().observe(viewLifecycleOwner) {
+            binding.favourite.isChecked = it != null
         }
     }
 

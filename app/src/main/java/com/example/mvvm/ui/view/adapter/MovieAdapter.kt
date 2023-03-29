@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mvvm.R
-import com.example.mvvm.data.enum.ItemMovieType
-import com.example.mvvm.data.enum.State
+import com.example.mvvm.data.enumtype.ItemMovieType
+import com.example.mvvm.data.enumtype.State
 import com.example.mvvm.data.model.MovieItem
 import com.example.mvvm.databinding.ItemBigMovieBinding
 import com.example.mvvm.databinding.ItemSmallMovieBinding
@@ -29,10 +29,11 @@ class MovieAdapter(
         set(value) {
             if (movies.isNotEmpty()) {
                 field.addAll(value)
+                notifyItemRangeInserted(movies.size, field.size)
             } else {
                 field = value
+                notifyItemRangeChanged(0, field.size)
             }
-            notifyItemRangeInserted(movies.size, field.size)
         }
     var state: State = State.LOADING
         set(value) {

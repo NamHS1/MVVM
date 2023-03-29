@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.mvvm.R
-import com.example.mvvm.data.enum.ItemMovieType
+import com.example.mvvm.data.enumtype.ItemMovieType
 import com.example.mvvm.databinding.FragmentHomeBinding
 import com.example.mvvm.extension.orEmpty
 import com.example.mvvm.ui.base.BaseFragment

@@ -1,7 +1,7 @@
 package com.example.mvvm.ui.view.adapter.viewholder
 
 import com.bumptech.glide.Glide
-import com.example.mvvm.data.enum.State
+import com.example.mvvm.data.enumtype.State
 import com.example.mvvm.data.model.MovieDetail
 import com.example.mvvm.databinding.ItemHistoryBinding
 import com.example.mvvm.extension.orW600xH900

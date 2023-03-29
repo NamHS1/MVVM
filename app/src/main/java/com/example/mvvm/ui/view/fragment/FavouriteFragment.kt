@@ -41,29 +41,25 @@ class FavouriteFragment(
             actionMoveDetail = {
                 controller.navigate(FavouriteFragmentDirections.actionFavouriteToMovieDetail(id = it))
             },
-            actionFavorite = { position, id ->
-                viewModel.removeFavorite(
-                    id = id,
+            actionFavorite = { position, favorite ->
+                viewModel.deleteFavorite(
                     position = position,
+                    favorite = favorite,
                     adapter = favoriteAdapter
                 )
             }
         )
     }
 
-    override fun fetchData() {
-        viewModel.fetchData()
-    }
-
     override fun observeViewModel() {
-        viewModel.liveData.observe(viewLifecycleOwner) {
+        viewModel.favorites().observe(viewLifecycleOwner) {
             binding.apply {
                 if (it == null || it.isEmpty()) {
                     (container as ViewGroup).onVisibility(noFavorite, titleHeader)
                 } else {
                     (container as ViewGroup).onVisibility(listFavorite, titleHeader)
                 }
-                favoriteAdapter.movies = it.toMutableList()
+                favoriteAdapter.favorites = it.reversed().toMutableList()
             }
         }
     }
