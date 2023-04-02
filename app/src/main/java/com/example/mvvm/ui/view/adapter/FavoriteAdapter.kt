@@ -42,6 +42,6 @@ class FavoriteAdapter(
     override fun getItemCount() = favorites.size
 
     override fun onBindViewHolder(holder: BaseViewHolder<Favorite>, position: Int) {
-        holder.bind(favorites[position], position)
+        holder.bind(favorites[position])
     }
 }

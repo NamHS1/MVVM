@@ -11,6 +11,9 @@
         <action
             android:id="@+id/action_home_to_movieDetail"
             app:destination="@id/homeMovieDetailFragment" />
+        <action
+            android:id="@+id/action_home_to_search"
+            app:destination="@id/searchFragment" />
     </fragment>
     <fragment
         android:id="@+id/homeMovieDetailFragment"
@@ -20,5 +23,13 @@
             android:name="id"
             android:defaultValue="0"
             app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.mvvm.ui.view.fragment.SearchFragment"
+        android:label="SearchFragment" >
+        <action
+            android:id="@+id/action_search_to_movieDetail"
+            app:destination="@id/homeMovieDetailFragment" />
     </fragment>
 </navigation>

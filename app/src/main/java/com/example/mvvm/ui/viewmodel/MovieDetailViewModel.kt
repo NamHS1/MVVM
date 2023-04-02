@@ -8,7 +8,7 @@ import com.example.mvvm.data.database.entity.Favorite
 import com.example.mvvm.data.enumtype.State
 import com.example.mvvm.data.mapper.FavoriteMapper
 import com.example.mvvm.data.model.MovieDetail
-import com.example.mvvm.data.usecase.MovieUseCase
+import com.example.mvvm.usecase.MovieUseCase
 import com.example.mvvm.ui.base.BaseViewModel
 import com.example.mvvm.util.Constant
 import kotlinx.coroutines.launch

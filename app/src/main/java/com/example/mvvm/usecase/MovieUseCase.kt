@@ -1,4 +1,4 @@
-package com.example.mvvm.data.usecase
+package com.example.mvvm.usecase
 
 import androidx.lifecycle.LiveData
 import com.example.mvvm.data.database.entity.Favorite

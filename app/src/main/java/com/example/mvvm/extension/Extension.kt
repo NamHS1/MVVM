@@ -1,8 +1,12 @@
 package com.example.mvvm.extension
 
+import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.forEach
+import com.bumptech.glide.Glide
 import com.example.mvvm.util.Constant
 import java.text.SimpleDateFormat
 import java.util.*
@@ -45,4 +49,33 @@ fun ViewGroup.onVisibility(vararg views: View) {
 
 fun <T> List<T>?.orEmpty(): MutableList<T> {
     return this?.toMutableList() ?: mutableListOf()
+}
+
+fun View.showKeyBoard() {
+    val imm: InputMethodManager =
+        context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+}
+
+fun View.hideKeyBoard() {
+    val imm: InputMethodManager =
+        context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(this.windowToken, 0)
+}
+
+fun String.match(list: List<String>): List<String>? {
+    val chars: List<Char> = this.toList()
+    list.forEach {string ->
+        chars.forEach {char ->
+
+        }
+    }
+
+    return null
+}
+
+fun AppCompatImageView.loadImage(path: String) {
+    Glide.with(context)
+        .load(path)
+        .into(this)
 }

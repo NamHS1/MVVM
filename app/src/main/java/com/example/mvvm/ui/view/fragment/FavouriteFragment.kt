@@ -1,5 +1,6 @@
 package com.example.mvvm.ui.view.fragment
 
+import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -30,22 +31,29 @@ class FavouriteFragment(
                 controller.navigate(FavouriteFragmentDirections.actionFavouriteToMovieDetail(id = it))
             },
             actionFavorite = { position, favorite ->
-                viewModel.deleteFavorite(
-                    position = position,
-                    favorite = favorite,
-                    adapter = favoriteAdapter
-                )
+                favoriteAdapter.favorites.removeAt(position)
+                favoriteAdapter.notifyItemRemoved(position)
+                favoriteAdapter.notifyItemRangeChanged(position, favoriteAdapter.favorites.size)
+
+                viewModel.deleteFavorite(favorite)
             }
         )
+    }
+
+    override fun initHeader() {
+        binding.header.apply {
+            actionHeader.visibility = View.GONE
+            titleHeader.text = getString(R.string.favorite)
+        }
     }
 
     override fun observeViewModel() {
         viewModel.favorites().observe(viewLifecycleOwner) {
             binding.apply {
                 if (it == null || it.isEmpty()) {
-                    (container as ViewGroup).onVisibility(noFavorite, titleHeader)
+                    (container as ViewGroup).onVisibility(noFavorite, header.root)
                 } else {
-                    (container as ViewGroup).onVisibility(listFavorite, titleHeader)
+                    (container as ViewGroup).onVisibility(listFavorite, header.root)
                 }
                 favoriteAdapter.favorites = it.reversed().toMutableList()
             }

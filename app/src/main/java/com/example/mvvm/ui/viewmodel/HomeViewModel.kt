@@ -1,5 +1,7 @@
 package com.example.mvvm.ui.viewmodel
 
+import android.os.Handler
+import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.mvvm.data.enumtype.State
@@ -7,16 +9,20 @@ import com.example.mvvm.ui.base.BaseViewModel
 import com.example.mvvm.data.model.home.NowPlaying
 import com.example.mvvm.data.model.home.Popular
 import com.example.mvvm.data.model.home.UpComing
-import com.example.mvvm.data.usecase.MovieUseCase
+import com.example.mvvm.usecase.MovieUseCase
+import com.example.mvvm.util.Constant
 import com.example.mvvm.util.Event
+import kotlinx.coroutines.*
 
 class HomeViewModel : BaseViewModel() {
 
-    private var _moviesNowPlaying: MutableLiveData<Event<NowPlaying>> = MutableLiveData<Event<NowPlaying>>()
+    private var _moviesNowPlaying: MutableLiveData<Event<NowPlaying>> =
+        MutableLiveData<Event<NowPlaying>>()
     val moviesNowPlaying: LiveData<Event<NowPlaying>>
         get() = _moviesNowPlaying
 
-    private var _moviesUpComing: MutableLiveData<Event<UpComing>> = MutableLiveData<Event<UpComing>>()
+    private var _moviesUpComing: MutableLiveData<Event<UpComing>> =
+        MutableLiveData<Event<UpComing>>()
     val moviesUpComing: LiveData<Event<UpComing>>
         get() = _moviesUpComing
 
@@ -40,6 +46,31 @@ class HomeViewModel : BaseViewModel() {
         getMoviesNowPlaying()
         getMoviesPopular()
         getMoviesUpComing()
+    }
+
+    private var _autoScroll: MutableLiveData<Event<Int>> = MutableLiveData<Event<Int>>()
+    val autoScroll: LiveData<Event<Int>>
+        get() = _autoScroll
+
+    private var indexAutoScroll: Int = 0
+
+    private val handleAutoScroll = Handler(Looper.getMainLooper())
+
+    private var hasBeenHandled = false
+
+    private val runnableAutoScroll =  Runnable {
+        _moviesUpComing.value?.peekContent()?.movies?.size?.let {
+            if((indexAutoScroll == it - 1)) {
+                indexAutoScroll = 0
+            } else {
+                indexAutoScroll++
+            }
+            _autoScroll.value = Event(indexAutoScroll)
+        }
+    }
+
+    fun setIndexAutoScroll(index: Int) {
+        this.indexAutoScroll = index
     }
 
     fun getMoviesNowPlaying() {
@@ -83,11 +114,29 @@ class HomeViewModel : BaseViewModel() {
         MovieUseCase.getMoviesUpComing(page = page).fetchData(
             success = {
                 _moviesUpComing.value = Event(it)
+                startAutoScroll()
             },
             error = {},
             state = {
                 _stateUpComing.value = Event(it)
             }
         )
+    }
+
+    fun cancelAutoScroll() {
+        handleAutoScroll.removeCallbacks(runnableAutoScroll)
+        hasBeenHandled = false
+    }
+
+    fun startAutoScroll() {
+        if (!hasBeenHandled) {
+            handleAutoScroll.postDelayed(runnableAutoScroll, Constant.DELAY_TIME)
+            hasBeenHandled = true
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        cancelAutoScroll()
     }
 }

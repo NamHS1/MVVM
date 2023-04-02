@@ -4,7 +4,7 @@
     <item
         android:width="35dp"
         android:height="35dp"
-        android:drawable="@drawable/baseline_search_24"
+        android:drawable="@drawable/icon_search"
         android:left="15dp"
         android:top="7.5dp" />
 </layer-list>

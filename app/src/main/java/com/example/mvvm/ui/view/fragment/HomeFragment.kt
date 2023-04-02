@@ -8,6 +8,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.example.mvvm.MovieApplication
 import com.example.mvvm.R
 import com.example.mvvm.data.enumtype.ItemMovieType
 import com.example.mvvm.databinding.FragmentHomeBinding
@@ -16,6 +17,7 @@ import com.example.mvvm.ui.base.BaseFragment
 import com.example.mvvm.ui.view.adapter.MovieAdapter
 import com.example.mvvm.ui.viewmodel.HomeViewModel
 import com.example.mvvm.util.EventObserver
+import com.example.mvvm.util.PageTransformer
 
 class HomeFragment(
 
@@ -72,38 +74,67 @@ class HomeFragment(
         findNavController()
     }
 
-    override fun observeViewModel() {
-        viewModel.moviesNowPlaying.observe(viewLifecycleOwner, EventObserver {
-            nowPlayingAdapter.movies = it.movies.orEmpty()
-        })
-        viewModel.moviesPopular.observe(viewLifecycleOwner, EventObserver {
-            popularAdapter.movies = it.movies.orEmpty()
-        })
-        viewModel.moviesUpComing.observe(viewLifecycleOwner, EventObserver {
-            it.movies?.let { movie ->
-                initIndicatorBanner(movie.size)
-                upComingAdapter.movies = movie.orEmpty()
-            }
-        })
+    override fun initHeader() {
+        binding.header.apply {
+            titleHeader.text = getString(R.string.home)
+            actionHeader.text = getString(androidx.appcompat.R.string.search_menu_title)
+            actionHeader.setCompoundDrawablesWithIntrinsicBounds(
+                null,
+                null,
+                ContextCompat.getDrawable(
+                    MovieApplication.application(),
+                    R.drawable.icon_search
+                ),
+                null
+            )
+        }
+    }
 
-        viewModel.statePopular.observe(viewLifecycleOwner, EventObserver {
-            popularAdapter.state = it
-        })
-        viewModel.stateUpComing.observe(viewLifecycleOwner, EventObserver {
-            upComingAdapter.state = it
-        })
-        viewModel.stateNowPlaying.observe(viewLifecycleOwner, EventObserver {
-            nowPlayingAdapter.state = it
-        })
+    override fun observeViewModel() {
+        viewModel.apply {
+            moviesNowPlaying.observe(viewLifecycleOwner, EventObserver {
+                nowPlayingAdapter.movies = it.movies.orEmpty()
+            })
+            moviesNowPlaying.observe(viewLifecycleOwner, EventObserver {
+                nowPlayingAdapter.movies = it.movies.orEmpty()
+            })
+            moviesPopular.observe(viewLifecycleOwner, EventObserver {
+                popularAdapter.movies = it.movies.orEmpty()
+            })
+
+            moviesUpComing.observe(viewLifecycleOwner, EventObserver {
+                it.movies?.let { movie ->
+                    initIndicatorBanner(movie.size)
+                    upComingAdapter.movies = movie.orEmpty()
+                }
+            })
+
+            statePopular.observe(viewLifecycleOwner, EventObserver {
+                popularAdapter.state = it
+            })
+
+            stateUpComing.observe(viewLifecycleOwner, EventObserver {
+                upComingAdapter.state = it
+            })
+
+            stateNowPlaying.observe(viewLifecycleOwner, EventObserver {
+                nowPlayingAdapter.state = it
+            })
+
+            autoScroll.observe(viewLifecycleOwner, EventObserver {
+                binding.banner.setCurrentItem(it, true)
+            })
+        }
     }
 
     override fun initControls() {
         binding.banner.apply {
             adapter = upComingAdapter
             isNestedScrollingEnabled = false
-
-            setPageTransformer(this)
             initIndicatorBanner(upComingAdapter.itemCount)
+
+            val screenHeight = resources.displayMetrics.heightPixels
+            setPageTransformer(PageTransformer(screenHeight))
         }
 
         intiRecyclerView(binding.listPopular, popularAdapter)
@@ -114,40 +145,22 @@ class HomeFragment(
         binding.banner.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
+                viewModel.setIndexAutoScroll(position)
                 (binding.indicatorBanner[position] as RadioButton).isChecked = true
             }
-        })
-    }
 
-    private fun setPageTransformer(viewPager2: ViewPager2) {
-        viewPager2.apply {
-            clipToPadding = false
-            clipChildren = false
-            offscreenPageLimit = 1
-
-            val maxAlpha = 1.0f
-            val minAlpha = 0.8f
-
-            val maxScale = 1f
-            val scalePercent = 0.9f
-            val minScale = scalePercent * maxScale
-
-            val screenHeight = resources.displayMetrics.heightPixels
-            val nextItemTranslationX = 2.5F * screenHeight / 60
-            setPageTransformer { view, position ->
-                // position  -1: left, 0: center, 1: right
-                val absPosition = kotlin.math.abs(position)
-                // alpha from MIN_ALPHA to MAX_ALPHA
-                view.alpha = maxAlpha - (maxAlpha - minAlpha) * absPosition
-                // scale from MIN_SCALE to MAX_SCALE
-                val scale = maxScale - (maxScale - minScale) * absPosition
-                view.scaleY = scale
-                view.scaleX = scale
-                // translation X
-                view.translationX = -position * nextItemTranslationX
+            override fun onPageScrollStateChanged(state: Int) {
+                super.onPageScrollStateChanged(state)
+                when (state) {
+                    ViewPager2.SCROLL_STATE_DRAGGING, ViewPager2.SCROLL_STATE_SETTLING -> viewModel.cancelAutoScroll()
+                    else -> viewModel.startAutoScroll()
+                }
             }
-        }
+        })
 
+        binding.header.actionHeader.setOnClickListener {
+            controller.navigate(HomeFragmentDirections.actionHomeToSearch())
+        }
     }
 
     private fun intiRecyclerView(recyclerView: RecyclerView, movieAdapter: MovieAdapter) {
@@ -180,4 +193,12 @@ class HomeFragment(
         (binding.indicatorBanner[0] as RadioButton).isChecked = true
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.startAutoScroll()
+    }
+    override fun onPause() {
+        super.onPause()
+        viewModel.cancelAutoScroll()
+    }
 }

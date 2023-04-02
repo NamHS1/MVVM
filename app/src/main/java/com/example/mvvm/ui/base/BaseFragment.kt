@@ -19,11 +19,13 @@ abstract class BaseFragment<DB : ViewDataBinding, VM : BaseViewModel> : Fragment
 
     protected abstract var classTypeOfViewModel: Class<VM>
 
-    protected abstract fun observeViewModel()
+    protected open fun initHeader() {}
 
     protected abstract fun initControls()
 
     protected abstract fun initEvent()
+
+    protected abstract fun observeViewModel()
 
     protected open fun fetchData() {}
 
@@ -48,9 +50,11 @@ abstract class BaseFragment<DB : ViewDataBinding, VM : BaseViewModel> : Fragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeViewModel()
+        initHeader()
         initControls()
         initEvent()
+
+        observeViewModel()
         fetchData()
     }
 }

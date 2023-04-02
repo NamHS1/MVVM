@@ -1,8 +1,10 @@
 package com.example.mvvm.ui.view.fragment
 
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.mvvm.MovieApplication
 import com.example.mvvm.R
 import com.example.mvvm.databinding.FragmentHistoryBinding
 import com.example.mvvm.extension.onVisibility
@@ -30,13 +32,31 @@ class HistoryFragment(
         findNavController()
     }
 
+    override fun initHeader() {
+        binding.header.apply {
+            titleHeader.text = getString(R.string.history)
+            actionHeader.text = getString(R.string.clear_all)
+            actionHeader.setCompoundDrawablesWithIntrinsicBounds(
+                null,
+                null,
+                ContextCompat.getDrawable(
+                    MovieApplication.application(),
+                    R.drawable.icon_bookmark_remove
+                ),
+                null
+            )
+        }
+    }
+
     override fun observeViewModel() {
         viewModel.liveData.observe(viewLifecycleOwner) {
             binding.apply {
                 if (it == null || it.isEmpty()) {
-                    (container as ViewGroup).onVisibility(noHistory, titleHeader)
+                    (container as ViewGroup).onVisibility(noHistory, header.root)
+                    (header.root as ViewGroup).onVisibility(header.titleHeader)
                 } else {
-                    (container as ViewGroup).onVisibility(clearHistory, listHistory, titleHeader)
+                    (container as ViewGroup).onVisibility(header.root, listHistory)
+                    (header.root as ViewGroup).onVisibility(header.titleHeader, header.actionHeader)
                 }
                 historyAdapter.movies = it.toMutableList()
             }
@@ -58,7 +78,7 @@ class HistoryFragment(
     }
 
     override fun initEvent() {
-        binding.clearHistory.setOnClickListener {
+        binding.header.actionHeader.setOnClickListener {
             viewModel.clearHistory()
         }
     }

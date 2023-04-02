@@ -74,7 +74,7 @@
                 android:id="@+id/reload"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:src="@drawable/baseline_refresh_24"
+                android:src="@drawable/icon_refresh_24"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="@+id/guide_line_45"
                 app:layout_constraintRight_toRightOf="@id/guide_line_55"

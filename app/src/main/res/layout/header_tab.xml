@@ -11,15 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/btn_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:src="@drawable/baseline_arrow_back_ios_24"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/title_header"
             android:layout_width="wrap_content"
@@ -29,9 +20,21 @@
             android:textSize="30sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_back"
-            tools:text="History" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Home" />
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/action_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="5dp"
+            android:gravity="end|center"
+            android:padding="10dp"
+            android:textColor="@color/silver"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title_header"
+            tools:drawableEnd="@drawable/icon_search"
+            tools:text="Search" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

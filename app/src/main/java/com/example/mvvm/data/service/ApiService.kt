@@ -21,9 +21,6 @@ interface ApiService {
     @GET("movie/{movie_id}")
     fun getMovieDetail(@Path("movie_id") movieId: Int): Observable<MovieDetail>
 
-    @GET("movie/{movie_id}/recommendations")
-    fun getRecommendationMovies(@Path("movie_id") movieId: Int): Observable<Results>
-
     @GET("search/movie")
     fun searchMovie(@Query("query") query: String, @Query("page") page: Int): Observable<Results>
 }

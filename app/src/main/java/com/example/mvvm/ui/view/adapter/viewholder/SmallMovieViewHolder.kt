@@ -1,11 +1,11 @@
 package com.example.mvvm.ui.view.adapter.viewholder
 
 import android.view.ViewGroup
-import com.bumptech.glide.Glide
 import com.example.mvvm.R
 import com.example.mvvm.data.enumtype.State
 import com.example.mvvm.data.model.MovieItem
 import com.example.mvvm.databinding.ItemSmallMovieBinding
+import com.example.mvvm.extension.loadImage
 import com.example.mvvm.extension.onVisibility
 import com.example.mvvm.ui.base.BaseViewHolder
 
@@ -16,7 +16,7 @@ class SmallMovieViewHolder(
     private val actionLoadMore: () -> Unit
 ) : BaseViewHolder<MovieItem>(binding.root) {
 
-    override fun bind(model: MovieItem?, position: Int, state: State) {
+    override fun bind(model: MovieItem?, state: State) {
         binding.apply {
             image.apply {
                 val margin = context.resources.getDimensionPixelSize(R.dimen.margin)
@@ -47,9 +47,7 @@ class SmallMovieViewHolder(
                     model?.let { model ->
                         title.text = model.title
 
-                        Glide.with(context)
-                            .load(model.imagePath)
-                            .into(binding.image)
+                        image.loadImage(model.imagePath)
 
                         root.setOnClickListener {
                             actionMoveDetail.invoke(model.id)

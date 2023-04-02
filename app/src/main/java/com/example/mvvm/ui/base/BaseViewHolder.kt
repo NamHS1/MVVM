@@ -8,5 +8,5 @@ import com.example.mvvm.data.enumtype.State
 abstract class BaseViewHolder<in T>(view: View) : RecyclerView.ViewHolder(view) {
 
     protected val context: Context = view.context
-    abstract fun bind(model: T?, position: Int = 0,state: State = State.SUCCESS)
+    abstract fun bind(model: T?, state: State = State.SUCCESS)
 }

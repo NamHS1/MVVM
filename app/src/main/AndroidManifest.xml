@@ -12,6 +12,7 @@
         android:theme="@style/Theme.MVVM">
         <activity
             android:name=".ui.view.MainActivity"
+            android:windowSoftInputMode="adjustNothing"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

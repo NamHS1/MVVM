@@ -2,17 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/homeTab"
-        android:icon="@drawable/baseline_home_24"
+        android:icon="@drawable/icon_home_24"
         android:title="@string/home" />
 
     <item
         android:id="@+id/favouriteTab"
-        android:icon="@drawable/baseline_favorite_24"
+        android:icon="@drawable/icon_favorite_24"
         android:title="@string/favorite" />
 
     <item
         android:id="@+id/historyTab"
-        android:icon="@drawable/baseline_history_24"
+        android:icon="@drawable/icon_history_24"
         android:title="@string/history" />
 
 </menu>

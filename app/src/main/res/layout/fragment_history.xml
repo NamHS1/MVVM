@@ -12,31 +12,9 @@
         android:layout_height="match_parent"
         android:layout_marginTop="10dp">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/title_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:textColor="@color/silver"
-            android:text="@string/history"
-            android:textSize="30sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/clear_history"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="end|center"
-            android:padding="10dp"
-            android:text="@string/clear_all"
-            android:drawablePadding="5dp"
-            android:drawableEnd="@drawable/baseline_bookmark_remove_24"
-            android:textColor="@color/silver"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title_header" />
+        <include
+            android:id="@+id/header"
+            layout="@layout/header_tab"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_history"
@@ -45,17 +23,17 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/clear_history" />
+            app:layout_constraintTop_toBottomOf="@+id/header" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/no_history"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/baseline_history_24"
+            android:src="@drawable/icon_history_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title_header" />
+            app:layout_constraintTop_toBottomOf="@+id/header" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

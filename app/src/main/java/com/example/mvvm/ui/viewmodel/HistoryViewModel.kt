@@ -3,7 +3,7 @@ package com.example.mvvm.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.mvvm.data.model.MovieDetail
-import com.example.mvvm.data.usecase.MovieUseCase
+import com.example.mvvm.usecase.MovieUseCase
 import com.example.mvvm.ui.base.BaseViewModel
 
 class HistoryViewModel : BaseViewModel() {

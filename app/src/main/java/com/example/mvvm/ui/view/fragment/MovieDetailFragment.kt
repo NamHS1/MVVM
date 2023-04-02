@@ -6,7 +6,6 @@ import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.Glide
 import com.example.mvvm.MovieApplication
 import com.example.mvvm.R
 import com.example.mvvm.data.enumtype.State
@@ -15,10 +14,7 @@ import com.example.mvvm.data.model.Genre
 import com.example.mvvm.data.model.MovieDetail
 import com.example.mvvm.databinding.FragmentMovieDetailBinding
 import com.example.mvvm.databinding.ItemCompaniesBinding
-import com.example.mvvm.extension.convert
-import com.example.mvvm.extension.formatDate
-import com.example.mvvm.extension.orW533xH300
-import com.example.mvvm.extension.orW600xH900
+import com.example.mvvm.extension.*
 import com.example.mvvm.ui.base.BaseFragment
 import com.example.mvvm.ui.viewmodel.MovieDetailViewModel
 import com.example.mvvm.util.Constant
@@ -83,9 +79,7 @@ class MovieDetailFragment(
 
     private fun setContent(movie: MovieDetail) {
         binding.apply {
-            Glide.with(MovieApplication.application())
-                .load(movie.backdropPath.orW533xH300())
-                .into(binding.imageBackdrop)
+            imageBackdrop.loadImage(movie.backdropPath.orW533xH300())
 
             title.text = movie.title
             overview.text = movie.overview
@@ -141,9 +135,7 @@ class MovieDetailFragment(
                         binding.companies,
                         false
                     )
-                    Glide.with(MovieApplication.application())
-                        .load(data.logoPath.orW600xH900())
-                        .into(view.image)
+                    view.image.loadImage(data.logoPath.orW600xH900())
                     view.name.text = data.name
                     binding.companies.addView(view.root)
                 }
