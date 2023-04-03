@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.mvvm.data.database.entity.Favorite
 import com.example.mvvm.usecase.MovieUseCase
 import com.example.mvvm.ui.base.BaseViewModel
-import com.example.mvvm.ui.view.adapter.FavoriteAdapter
+import com.example.mvvm.ui.adapter.FavoriteAdapter
 import kotlinx.coroutines.launch
 
 class FavouriteViewModel : BaseViewModel() {

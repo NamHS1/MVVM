@@ -1,9 +1,12 @@
 package com.example.mvvm.extension
 
 import android.content.Context
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.forEach
 import com.bumptech.glide.Glide
@@ -61,17 +64,6 @@ fun View.hideKeyBoard() {
     val imm: InputMethodManager =
         context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(this.windowToken, 0)
-}
-
-fun String.match(list: List<String>): List<String>? {
-    val chars: List<Char> = this.toList()
-    list.forEach {string ->
-        chars.forEach {char ->
-
-        }
-    }
-
-    return null
 }
 
 fun AppCompatImageView.loadImage(path: String) {

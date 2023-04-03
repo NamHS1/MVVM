@@ -1,4 +1,4 @@
-package com.example.mvvm.ui.view.adapter
+package com.example.mvvm.ui.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -12,8 +12,8 @@ import com.example.mvvm.data.model.MovieItem
 import com.example.mvvm.databinding.ItemBigMovieBinding
 import com.example.mvvm.databinding.ItemSmallMovieBinding
 import com.example.mvvm.ui.base.BaseViewHolder
-import com.example.mvvm.ui.view.adapter.viewholder.BigMovieViewHolder
-import com.example.mvvm.ui.view.adapter.viewholder.SmallMovieViewHolder
+import com.example.mvvm.ui.adapter.viewholder.BigMovieViewHolder
+import com.example.mvvm.ui.adapter.viewholder.SmallMovieViewHolder
 
 class MovieAdapter(
     context: Context,

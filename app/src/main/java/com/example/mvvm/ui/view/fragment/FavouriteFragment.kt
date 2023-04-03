@@ -9,7 +9,7 @@ import com.example.mvvm.R
 import com.example.mvvm.ui.base.BaseFragment
 import com.example.mvvm.databinding.FragmentFavouriteBinding
 import com.example.mvvm.extension.onVisibility
-import com.example.mvvm.ui.view.adapter.FavoriteAdapter
+import com.example.mvvm.ui.adapter.FavoriteAdapter
 import com.example.mvvm.ui.viewmodel.FavouriteViewModel
 
 class FavouriteFragment(

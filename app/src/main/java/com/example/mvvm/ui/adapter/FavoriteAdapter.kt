@@ -1,4 +1,4 @@
-package com.example.mvvm.ui.view.adapter
+package com.example.mvvm.ui.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import com.example.mvvm.R
 import com.example.mvvm.data.database.entity.Favorite
 import com.example.mvvm.databinding.ItemFavoriteBinding
 import com.example.mvvm.ui.base.BaseViewHolder
-import com.example.mvvm.ui.view.adapter.viewholder.FavoriteViewHolder
+import com.example.mvvm.ui.adapter.viewholder.FavoriteViewHolder
 
 class FavoriteAdapter(
     context: Context,

@@ -1,4 +1,4 @@
-package com.example.mvvm.ui.view.adapter
+package com.example.mvvm.ui.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import com.example.mvvm.R
 import com.example.mvvm.data.model.MovieDetail
 import com.example.mvvm.databinding.ItemHistoryBinding
 import com.example.mvvm.ui.base.BaseViewHolder
-import com.example.mvvm.ui.view.adapter.viewholder.HistoryViewHolder
+import com.example.mvvm.ui.adapter.viewholder.HistoryViewHolder
 
 class HistoryAdapter(
     context: Context,

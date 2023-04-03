@@ -14,7 +14,7 @@ import com.example.mvvm.data.enumtype.ItemMovieType
 import com.example.mvvm.databinding.FragmentHomeBinding
 import com.example.mvvm.extension.orEmpty
 import com.example.mvvm.ui.base.BaseFragment
-import com.example.mvvm.ui.view.adapter.MovieAdapter
+import com.example.mvvm.ui.adapter.MovieAdapter
 import com.example.mvvm.ui.viewmodel.HomeViewModel
 import com.example.mvvm.util.EventObserver
 import com.example.mvvm.util.PageTransformer
@@ -32,7 +32,7 @@ class HomeFragment(
             requireContext(),
             ItemMovieType.SMALL,
             actionMoveDetail = {
-                controller.navigate(HomeFragmentDirections.actionHomeToMovieDetail(id = it))
+                controller.navigate(HomeFragmentDirections.actionMoveToMovieDetail(id = it))
             },
             actionLoadMore = {
                 viewModel.getMoviesPopular()
@@ -47,7 +47,7 @@ class HomeFragment(
             requireContext(),
             ItemMovieType.SMALL,
             actionMoveDetail = {
-                controller.navigate(HomeFragmentDirections.actionHomeToMovieDetail(id = it))
+                controller.navigate(HomeFragmentDirections.actionMoveToMovieDetail(id = it))
             },
             actionLoadMore = {
                 viewModel.getMoviesNowPlaying()
@@ -62,7 +62,7 @@ class HomeFragment(
             requireContext(),
             ItemMovieType.BIG,
             actionMoveDetail = {
-                controller.navigate(HomeFragmentDirections.actionHomeToMovieDetail(id = it))
+                controller.navigate(HomeFragmentDirections.actionMoveToMovieDetail(id = it))
             },
             actionLoadMore = {},
             actionReload = {

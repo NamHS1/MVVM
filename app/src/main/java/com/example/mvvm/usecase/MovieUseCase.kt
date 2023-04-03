@@ -5,12 +5,14 @@ import com.example.mvvm.data.database.entity.Favorite
 import com.example.mvvm.data.enumtype.MovieType
 import com.example.mvvm.data.mapper.NowPlayingMapper
 import com.example.mvvm.data.mapper.PopularMapper
+import com.example.mvvm.data.mapper.SearchMapper
 import com.example.mvvm.data.mapper.UpComingMapper
 import com.example.mvvm.data.model.MovieDetail
 import com.example.mvvm.data.model.Results
 import com.example.mvvm.data.model.home.NowPlaying
 import com.example.mvvm.data.model.home.Popular
 import com.example.mvvm.data.model.home.UpComing
+import com.example.mvvm.data.model.search.Search
 import com.example.mvvm.data.repository.FavoriteLocalRepository
 import com.example.mvvm.data.repository.MovieRepository
 import com.example.mvvm.data.repository.PrefRepository
@@ -23,15 +25,16 @@ object MovieUseCase {
     private val nowPlayingMapper: NowPlayingMapper = NowPlayingMapper()
     private val upComingMapper: UpComingMapper = UpComingMapper()
     private val popularMapper: PopularMapper = PopularMapper()
+    private val searchMapper: SearchMapper = SearchMapper()
 
     private fun getMovie(
         type: MovieType,
         page: Int,
-        keyWord: String? = null
+        keyword: String? = null
     ): Observable<Results> = when (type) {
         MovieType.NOW_PLAYING -> MovieRepository.getNowPlayingMovies(page)
         MovieType.POPULAR -> MovieRepository.getPopularMovies(page)
-        MovieType.SEARCH -> MovieRepository.searchMovie(keyWord.orEmpty(), page)
+        MovieType.SEARCH -> MovieRepository.searchMovie(keyword.orEmpty(), page)
         else -> MovieRepository.getUpComingMovies(page)
     }
 
@@ -68,10 +71,12 @@ object MovieUseCase {
 
     fun getMovieSearch(
         type: MovieType = MovieType.SEARCH,
-        keyWord: String? = null,
-        page: Int,
-    ): Observable<Results> {
-        return getMovie(type, page, keyWord)
+        keyword: String? = null,
+        page: Int
+    ): Observable<Search> {
+        return getMovie(type, page, keyword).map {
+            searchMapper.mapFrom(it)
+        }
     }
 
 

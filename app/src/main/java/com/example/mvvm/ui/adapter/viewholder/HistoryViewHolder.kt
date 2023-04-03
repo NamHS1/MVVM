@@ -1,4 +1,4 @@
-package com.example.mvvm.ui.view.adapter.viewholder
+package com.example.mvvm.ui.adapter.viewholder
 
 import com.example.mvvm.data.enumtype.State
 import com.example.mvvm.data.model.MovieDetail

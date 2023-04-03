@@ -14,5 +14,7 @@ class Constant {
         const val YYYY_DD_MM_2 = "yyyy-dd-MM"
 
         const val DELAY_TIME = 3000L
+
+        const val DELAY_REQUEST = 300L
     }
 }

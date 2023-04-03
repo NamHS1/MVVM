@@ -9,7 +9,7 @@ import com.example.mvvm.R
 import com.example.mvvm.databinding.FragmentHistoryBinding
 import com.example.mvvm.extension.onVisibility
 import com.example.mvvm.ui.base.BaseFragment
-import com.example.mvvm.ui.view.adapter.HistoryAdapter
+import com.example.mvvm.ui.adapter.HistoryAdapter
 import com.example.mvvm.ui.viewmodel.HistoryViewModel
 
 class HistoryFragment(
