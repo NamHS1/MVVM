@@ -1,8 +1,7 @@
 package com.example.mvvm.data.enumtype
 
-enum class State {
+enum class NetworkState {
     LOADING,
-    LOAD_MORE,
     SUCCESS,
     ERROR
 }

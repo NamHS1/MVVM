@@ -4,8 +4,11 @@ import androidx.room.Room
 import com.example.mvvm.MovieApplication
 import com.example.mvvm.data.database.database.DataBase
 
-object DBConfig {
-    private const val DATABASE_NAME = "database-movie"
+class DBConfig {
+    companion object {
+        private const val DATABASE_NAME = "database-movie"
+    }
+
     private val dataBase = Room.databaseBuilder(
         MovieApplication.application(),
         DataBase::class.java, DATABASE_NAME

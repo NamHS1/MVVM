@@ -3,10 +3,11 @@ package com.example.mvvm.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
 import com.example.mvvm.data.database.entity.Favorite
-import com.example.mvvm.data.enumtype.State
-import com.example.mvvm.data.model.search.Search
+import com.example.mvvm.data.enumtype.NetworkState
 import com.example.mvvm.ui.base.BaseViewModel
+import com.example.mvvm.ui.model.MovieResponse
 import com.example.mvvm.usecase.MovieUseCase
 import com.example.mvvm.util.Constant
 import com.example.mvvm.util.Event
@@ -14,36 +15,34 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class SearchViewModel : BaseViewModel() {
+class SearchViewModel(
+    private val movieUseCase: MovieUseCase = MovieUseCase.getInstance()
+) : BaseViewModel() {
 
-    private var _liveData: MutableLiveData<Event<Search>> = MutableLiveData()
-    val liveData: LiveData<Event<Search>>
+    fun favorites(): LiveData<List<Favorite>> = MutableLiveData()
+
+    private var _liveData: MutableLiveData<Event<PagingData<MovieResponse>>> = MutableLiveData()
+    val liveData: LiveData<Event<PagingData<MovieResponse>>>
         get() = _liveData
 
-    private var _state: MutableLiveData<Event<State>> = MutableLiveData()
-    val state: LiveData<Event<State>>
-        get() = _state
-
-    fun favorites(): LiveData<List<Favorite>> = MovieUseCase.getFavorites()
-
-    private var job: Job? = null
-    private fun getListSearch(keyword: String?, page: Int = 1) {
-        MovieUseCase.getMovieSearch(keyword = keyword, page = page).fetchData(
+    private var _networkState: MutableLiveData<Event<NetworkState>> = MutableLiveData()
+    val networkState: LiveData<Event<NetworkState>>
+        get() = _networkState
+    private fun getListSearch(keyword: String) {
+        movieUseCase.getMovieSearch(keyword = keyword).fetchData(
             success = {
-                if (it.movies.isEmpty()) {
-                    _state.value = Event(State.ERROR)
-                }
                 _liveData.value = Event(it)
             },
             error = {
 
             },
             state = {
-                _state.value = Event(it)
+                _networkState.value = Event(it)
             }
         )
     }
 
+    private var job: Job? = null
     fun changeTextSearch(keyword: String?) {
         job?.cancel()
         if (!keyword.isNullOrEmpty()) {
@@ -60,14 +59,15 @@ class SearchViewModel : BaseViewModel() {
         } else {
             deleteFavorite(favorite)
         }
+        favorites()
     }
 
     private fun insertFavorite(favorite: Favorite) = viewModelScope.launch {
-        MovieUseCase.insertFavorite(favorite)
+        movieUseCase.insertFavorite(favorite)
     }
 
     private fun deleteFavorite(favorite: Favorite) = viewModelScope.launch {
-        MovieUseCase.deleteFavorite(favorite)
+        movieUseCase.deleteFavorite(favorite)
     }
 
     override fun onCleared() {

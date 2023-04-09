@@ -2,7 +2,7 @@ package com.example.mvvm.ui.base
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
-import com.example.mvvm.data.enumtype.State
+import com.example.mvvm.data.enumtype.NetworkState
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -18,20 +18,18 @@ abstract class BaseViewModel : ViewModel() {
     inline fun <T> Observable<T>.fetchData(
         crossinline success: (T) -> Unit,
         crossinline error: (Throwable) -> Unit,
-        crossinline state: (State) -> Unit
+        crossinline state: (NetworkState) -> Unit
     ) {
         subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe {
-                state(State.LOADING)
-            }
+            .doOnSubscribe { state(NetworkState.LOADING) }
             .subscribe(
                 { data ->
-                    state(State.SUCCESS)
+                    state(NetworkState.SUCCESS)
                     success(data)
                 },
                 { throwable ->
-                    state(State.ERROR)
+                    state(NetworkState.ERROR)
                     error(throwable)
                 }
             ).track()

@@ -8,7 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import com.example.mvvm.MovieApplication
 import com.example.mvvm.R
-import com.example.mvvm.data.enumtype.State
+import com.example.mvvm.data.enumtype.NetworkState
 import com.example.mvvm.data.model.Companies
 import com.example.mvvm.data.model.Genre
 import com.example.mvvm.data.model.MovieDetail
@@ -35,13 +35,12 @@ class MovieDetailFragment(
                 viewModel.addHistory(it)
             }
         }
-        viewModel.stateMovieDetail.observe(viewLifecycleOwner) {
+        viewModel.networkState.observe(viewLifecycleOwner) {
             it?.let {
                 when (it) {
-                    State.LOADING -> setState(binding.loading)
-                    State.SUCCESS -> setState(binding.groupSuccess)
-                    State.ERROR -> setState(binding.reload)
-                    else -> {}
+                    NetworkState.LOADING -> setState(binding.loading)
+                    NetworkState.SUCCESS -> setState(binding.groupSuccess)
+                    NetworkState.ERROR -> setState(binding.reload)
                 }
             }
         }

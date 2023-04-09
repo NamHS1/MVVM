@@ -8,10 +8,12 @@ import com.example.mvvm.ui.base.BaseViewModel
 import com.example.mvvm.ui.adapter.FavoriteAdapter
 import kotlinx.coroutines.launch
 
-class FavouriteViewModel : BaseViewModel() {
-    fun favorites(): LiveData<List<Favorite>> = MovieUseCase.getFavorites()
+class FavouriteViewModel(
+    private val movieUseCase: MovieUseCase = MovieUseCase.getInstance()
+) : BaseViewModel() {
+    fun favorites(): LiveData<List<Favorite>> = movieUseCase.getFavorites()
 
     fun deleteFavorite(favorite: Favorite) = viewModelScope.launch {
-        MovieUseCase.deleteFavorite(favorite)
+        movieUseCase.deleteFavorite(favorite)
     }
 }

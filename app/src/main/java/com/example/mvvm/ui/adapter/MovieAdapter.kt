@@ -1,100 +1,67 @@
 package com.example.mvvm.ui.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.RecyclerView
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import com.example.mvvm.R
 import com.example.mvvm.data.enumtype.ItemMovieType
-import com.example.mvvm.data.enumtype.State
-import com.example.mvvm.data.model.MovieItem
 import com.example.mvvm.databinding.ItemBigMovieBinding
 import com.example.mvvm.databinding.ItemSmallMovieBinding
 import com.example.mvvm.ui.base.BaseViewHolder
 import com.example.mvvm.ui.adapter.viewholder.BigMovieViewHolder
 import com.example.mvvm.ui.adapter.viewholder.SmallMovieViewHolder
+import com.example.mvvm.ui.model.MovieResponse
 
 class MovieAdapter(
-    context: Context,
     private val type: ItemMovieType,
-    private val actionMoveDetail: (Int) -> Unit,
-    private val actionLoadMore: () -> Unit,
-    private val actionReload: () -> Unit,
-) : RecyclerView.Adapter<BaseViewHolder<MovieItem>>() {
+    private val actionMoveDetail: (Int) -> Unit
+) : PagingDataAdapter<MovieResponse, BaseViewHolder<MovieResponse>>(DiffUtilCallBack) {
 
-    private val layoutInflater: LayoutInflater = LayoutInflater.from(context)
-
-    var movies: MutableList<MovieItem> = mutableListOf()
-        set(value) {
-            if (movies.isNotEmpty()) {
-                field.addAll(value)
-                notifyItemRangeInserted(movies.size, field.size)
-            } else {
-                field = value
-                notifyItemRangeChanged(0, field.size)
-            }
-        }
-    var state: State = State.LOADING
-        set(value) {
-            field = value
-            notifyItemChanged(movies.size)
+    object DiffUtilCallBack : DiffUtil.ItemCallback<MovieResponse>() {
+        override fun areItemsTheSame(oldItem: MovieResponse, newItem: MovieResponse): Boolean {
+            return oldItem.id == newItem.id
         }
 
-    override fun onBindViewHolder(holder: BaseViewHolder<MovieItem>, position: Int) {
-        if (position < itemCount - 1 || state == State.SUCCESS) {
-            holder.bind(movies[position], state = State.SUCCESS)
-        } else {
-            holder.bind(null, state = state)
+        override fun areContentsTheSame(oldItem: MovieResponse, newItem: MovieResponse): Boolean {
+            return oldItem == newItem
         }
     }
+    override fun onBindViewHolder(holder: BaseViewHolder<MovieResponse>, position: Int) {
+        getItem(position)?.let { holder.bind(it) }
+    }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<MovieItem> {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): BaseViewHolder<MovieResponse> {
         return when (type) {
             ItemMovieType.SMALL -> {
                 val binding = DataBindingUtil.inflate<ItemSmallMovieBinding>(
-                    layoutInflater,
+                    LayoutInflater.from(parent.context),
                     R.layout.item_small_movie,
                     parent,
                     false
                 )
                 SmallMovieViewHolder(
                     binding = binding,
-                    actionReload = actionReload,
-                    actionLoadMore = actionLoadMore,
                     actionMoveDetail = actionMoveDetail
                 )
             }
 
             else -> {
                 val binding = DataBindingUtil.inflate<ItemBigMovieBinding>(
-                    layoutInflater,
+                    LayoutInflater.from(parent.context),
                     R.layout.item_big_movie,
                     parent,
                     false
                 )
                 BigMovieViewHolder(
                     binding = binding,
-                    actionReload = actionReload,
                     actionMoveDetail = actionMoveDetail
                 )
             }
-        }
-    }
-
-    override fun getItemCount() = when (state) {
-        State.LOAD_MORE -> {
-            movies.size + 1
-        }
-        State.LOADING, State.ERROR -> {
-            if (movies.isNotEmpty()) {
-                movies.size + 1
-            } else {
-                1
-            }
-        }
-        else -> {
-            movies.size
         }
     }
 }

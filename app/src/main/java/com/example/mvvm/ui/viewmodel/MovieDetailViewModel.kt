@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.mvvm.data.database.entity.Favorite
-import com.example.mvvm.data.enumtype.State
+import com.example.mvvm.data.enumtype.NetworkState
 import com.example.mvvm.data.mapper.FavoriteMapper
 import com.example.mvvm.data.model.MovieDetail
 import com.example.mvvm.usecase.MovieUseCase
@@ -13,15 +13,17 @@ import com.example.mvvm.ui.base.BaseViewModel
 import com.example.mvvm.util.Constant
 import kotlinx.coroutines.launch
 
-class MovieDetailViewModel : BaseViewModel() {
+class MovieDetailViewModel(
+    private val movieUseCase: MovieUseCase = MovieUseCase.getInstance()
+) : BaseViewModel() {
 
     private var _liveData: MutableLiveData<MovieDetail> = MutableLiveData<MovieDetail>()
     val liveData: LiveData<MovieDetail>
         get() = _liveData
 
-    private var _stateMovieDetail: MutableLiveData<State> = MutableLiveData<State>()
-    val stateMovieDetail: LiveData<State>
-        get() = _stateMovieDetail
+    private var _networkState: MutableLiveData<NetworkState> = MutableLiveData<NetworkState>()
+    val networkState: LiveData<NetworkState>
+        get() = _networkState
 
     private var _id: Int = 0
         set(value) {
@@ -31,15 +33,15 @@ class MovieDetailViewModel : BaseViewModel() {
     val id: Int
         get() = _id
 
-    fun favorite(): LiveData<Favorite> = MovieUseCase.getFavorite(id)
+    fun favorite(): LiveData<Favorite> = movieUseCase.getFavorite(id)
     fun getMovieDetail(id: Int) {
-        MovieUseCase.getMovieDetail(id).fetchData(
+        movieUseCase.getMovieDetail(id).fetchData(
             success = {
                 _liveData.value = it
             },
             error = {},
             state = {
-                _stateMovieDetail.value = it
+                _networkState.value = it
             }
         )
     }
@@ -60,13 +62,13 @@ class MovieDetailViewModel : BaseViewModel() {
         favorite()
     }
 
-    fun addHistory(movieDetail: MovieDetail) = MovieUseCase.addHistory(movieDetail)
+    fun addHistory(movieDetail: MovieDetail) = movieUseCase.addHistory(movieDetail)
 
     private fun insertFavorite(movieDetail: MovieDetail) = viewModelScope.launch {
-        MovieUseCase.insertFavorite(FavoriteMapper.mapFrom(movieDetail))
+        movieUseCase.insertFavorite(FavoriteMapper.mapFrom(movieDetail))
     }
 
     private fun deleteFavorite(movieDetail: MovieDetail) = viewModelScope.launch {
-        MovieUseCase.deleteFavorite(FavoriteMapper.mapFrom(movieDetail))
+        movieUseCase.deleteFavorite(FavoriteMapper.mapFrom(movieDetail))
     }
 }

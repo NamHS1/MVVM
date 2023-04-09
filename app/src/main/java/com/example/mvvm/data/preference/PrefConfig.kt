@@ -7,19 +7,21 @@ import com.example.mvvm.data.service.PrefService
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 
-object PrefConfig {
+class PrefConfig {
+    companion object {
+        private const val PREFERENCE_NAME = "MOVIE_PREF"
+    }
 
-    private const val PREFERENCE_NAME = "MOVIE_PREF"
+    private inner class Pref : PrefService {
 
-    private var pref: SharedPreferences =
-        MovieApplication.application().getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
+        private var pref: SharedPreferences =
+            MovieApplication.application()
+                .getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
 
-    private val editor: SharedPreferences.Editor
-        get() = pref.edit()
+        private val editor: SharedPreferences.Editor
+            get() = pref.edit()
 
-    private val gson = Gson()
-
-    private class Pref : PrefService {
+        private val gson = Gson()
 
         override fun getInt(key: String): Int = pref.getInt(key, 0)
 

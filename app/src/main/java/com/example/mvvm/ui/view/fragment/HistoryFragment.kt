@@ -40,7 +40,7 @@ class HistoryFragment(
                 null,
                 null,
                 ContextCompat.getDrawable(
-                    MovieApplication.application(),
+                    this.root.context,
                     R.drawable.icon_bookmark_remove
                 ),
                 null

@@ -1,116 +1,83 @@
 package com.example.mvvm.usecase
 
 import androidx.lifecycle.LiveData
+import androidx.paging.PagingData
+import com.example.mvvm.data.api.ApiConfig
+import com.example.mvvm.data.database.DBConfig
 import com.example.mvvm.data.database.entity.Favorite
 import com.example.mvvm.data.enumtype.MovieType
-import com.example.mvvm.data.mapper.NowPlayingMapper
-import com.example.mvvm.data.mapper.PopularMapper
-import com.example.mvvm.data.mapper.SearchMapper
-import com.example.mvvm.data.mapper.UpComingMapper
+import com.example.mvvm.data.mapper.*
 import com.example.mvvm.data.model.MovieDetail
-import com.example.mvvm.data.model.Results
-import com.example.mvvm.data.model.home.NowPlaying
-import com.example.mvvm.data.model.home.Popular
-import com.example.mvvm.data.model.home.UpComing
-import com.example.mvvm.data.model.search.Search
-import com.example.mvvm.data.repository.FavoriteLocalRepository
-import com.example.mvvm.data.repository.MovieRepository
-import com.example.mvvm.data.repository.PrefRepository
+import com.example.mvvm.data.preference.PrefConfig
+import com.example.mvvm.data.repository.*
 import com.example.mvvm.extension.orEmpty
+import com.example.mvvm.ui.model.MovieResponse
 import com.example.mvvm.util.Constant
 import io.reactivex.Observable
 
-object MovieUseCase {
+class MovieUseCase private constructor() {
 
-    private val nowPlayingMapper: NowPlayingMapper = NowPlayingMapper()
-    private val upComingMapper: UpComingMapper = UpComingMapper()
-    private val popularMapper: PopularMapper = PopularMapper()
-    private val searchMapper: SearchMapper = SearchMapper()
-
-    private fun getMovie(
-        type: MovieType,
-        page: Int,
-        keyword: String? = null
-    ): Observable<Results> = when (type) {
-        MovieType.NOW_PLAYING -> MovieRepository.getNowPlayingMovies(page)
-        MovieType.POPULAR -> MovieRepository.getPopularMovies(page)
-        MovieType.SEARCH -> MovieRepository.searchMovie(keyword.orEmpty(), page)
-        else -> MovieRepository.getUpComingMovies(page)
+    private object Holder {
+        val instance = MovieUseCase()
     }
 
-    fun getMoviesNowPlaying(
-        type: MovieType = MovieType.NOW_PLAYING,
-        page: Int
-    ): Observable<NowPlaying> {
-        return getMovie(type, page).map {
-            nowPlayingMapper.mapFrom(it)
-        }
+    companion object {
+        @JvmStatic
+        fun getInstance() = Holder.instance
     }
 
-    fun getMoviesPopular(
-        type: MovieType = MovieType.POPULAR,
-        page: Int
-    ): Observable<Popular> {
-        return getMovie(type, page).map {
-            popularMapper.mapFrom(it)
-        }
-    }
+    private val movieMapper: MovieMapper = MovieMapper()
 
-    fun getMoviesUpComing(
-        type: MovieType = MovieType.UPCOMING,
-        page: Int
-    ): Observable<UpComing> {
-        return getMovie(type, page).map {
-            upComingMapper.mapFrom(it)
-        }
-    }
+    private val favoriteRepository: FavoriteRepository = FavoriteRepositoryImpl(
+        favoriteDao = DBConfig().favoriteDao
+    )
+
+    private val prefRepository: PrefRepository = PrefRepositoryImpl(
+        prefService = PrefConfig().prefService
+    )
+
+    private val movieRepository = MovieRepositoryImpl(
+        apiService = ApiConfig().apiService
+    )
 
     fun getMovieDetail(id: Int): Observable<MovieDetail> {
-        return MovieRepository.getMovieDetail(id)
+        return movieRepository.getMovieDetail(id)
     }
 
     fun getMovieSearch(
-        type: MovieType = MovieType.SEARCH,
-        keyword: String? = null,
-        page: Int
-    ): Observable<Search> {
-        return getMovie(type, page, keyword).map {
-            searchMapper.mapFrom(it)
-        }
-    }
+        keyword: String
+    ): Observable<PagingData<MovieResponse>> = movieRepository.getMovieList(
+        keyword = keyword,
+        mapper = movieMapper,
+        type = MovieType.SEARCH
+    )
 
+    fun getPopularMovie(): Observable<PagingData<MovieResponse>> = movieRepository.getMovieList(
+        mapper = movieMapper,
+        type = MovieType.POPULAR
+    )
 
-    fun getPagePopular(popular: Popular?): Int {
-        return popular?.let {
-            if (it.page < it.totalPage) {
-                it.page + 1
-            } else {
-                it.page
-            }
-        } ?: 1
-    }
+    fun getNowPlayingMovie(): Observable<PagingData<MovieResponse>> = movieRepository.getMovieList(
+        mapper = movieMapper,
+        type = MovieType.NOW_PLAYING
+    )
 
-    fun getPageNowPlaying(nowPlaying: NowPlaying?): Int {
-        return nowPlaying?.let {
-            if (it.page < it.totalPage) {
-                it.page + 1
-            } else {
-                it.page
-            }
-        } ?: 1
-    }
+    fun getUpComingMovie(): Observable<PagingData<MovieResponse>> = movieRepository.getMovieList(
+        mapper = movieMapper,
+        type = MovieType.UPCOMING
+    )
 
-    fun getFavorites(): LiveData<List<Favorite>> = FavoriteLocalRepository.getFavorites()
+    fun getFavorites(): LiveData<List<Favorite>> = favoriteRepository.getFavorites()
 
-    fun getFavorite(id: Int): LiveData<Favorite> = FavoriteLocalRepository.getFavorite(id)
-    suspend fun insertFavorite(favorite: Favorite) = FavoriteLocalRepository.insert(favorite)
+    fun getFavorite(id: Int): LiveData<Favorite> = favoriteRepository.getFavorite(id)
+    suspend fun insertFavorite(favorite: Favorite) = favoriteRepository.insert(favorite)
 
-    suspend fun deleteFavorite(favorite: Favorite) = FavoriteLocalRepository.delete(favorite)
+    suspend fun deleteFavorite(favorite: Favorite) = favoriteRepository.delete(favorite)
 
     fun getHistory(): List<MovieDetail> =
-        PrefRepository.getListMovie(Constant.PREF_HISTORY).orEmpty().reversed()
+        prefRepository.getListMovie(Constant.PREF_HISTORY).orEmpty().reversed()
 
-    fun addHistory(movieDetail: MovieDetail) = PrefRepository.apply {
+    fun addHistory(movieDetail: MovieDetail) = prefRepository.apply {
         val listHistory: MutableList<MovieDetail> = getListMovie(Constant.PREF_HISTORY).orEmpty()
         if (listHistory.isEmpty()) {
             listHistory.add(movieDetail)
@@ -123,5 +90,5 @@ object MovieUseCase {
         putListMovie(Constant.PREF_HISTORY, listHistory)
     }
 
-    fun clearAllHistory() = PrefRepository.removeListMovie(Constant.PREF_HISTORY)
+    fun clearAllHistory() = prefRepository.removeListMovie(Constant.PREF_HISTORY)
 }

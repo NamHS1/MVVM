@@ -2,19 +2,22 @@ package com.example.mvvm.ui.view.fragment
 
 import android.view.View
 import android.view.View.*
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mvvm.R
-import com.example.mvvm.data.enumtype.State
+import com.example.mvvm.data.enumtype.NetworkState
 import com.example.mvvm.databinding.FragmentSearchBinding
 import com.example.mvvm.extension.hideKeyBoard
-import com.example.mvvm.extension.orEmpty
 import com.example.mvvm.extension.showKeyBoard
 import com.example.mvvm.ui.adapter.SearchAdapter
+import com.example.mvvm.ui.adapter.loadstate.SearchLoadStateAdapter
 import com.example.mvvm.ui.base.BaseFragment
 import com.example.mvvm.ui.viewmodel.SearchViewModel
 import com.example.mvvm.util.EventObserver
+import kotlinx.coroutines.flow.collectLatest
 
 class SearchFragment(
     override var layoutResId: Int = R.layout.fragment_search,
@@ -27,7 +30,6 @@ class SearchFragment(
 
     private val searchAdapter: SearchAdapter by lazy {
         SearchAdapter(
-            requireContext(),
             actionFavorite = { favorite, isCheck ->
                 viewModel.handFavorite(favorite, isCheck)
             },
@@ -39,16 +41,16 @@ class SearchFragment(
 
     override fun observeViewModel() {
         viewModel.liveData.observe(viewLifecycleOwner, EventObserver {
-            searchAdapter.listSearch = it.movies.orEmpty()
+            searchAdapter.submitData(lifecycle, it)
             binding.root.requestFocus()
         })
         viewModel.favorites().observe(viewLifecycleOwner) {
             searchAdapter.listFavorite = it.toMutableList()
         }
-        viewModel.state.observe(viewLifecycleOwner, EventObserver {
+        viewModel.networkState.observe(viewLifecycleOwner, EventObserver {
             when (it) {
-                State.LOADING -> setState(binding.loading)
-                State.ERROR -> setState(binding.iconSearch)
+                NetworkState.LOADING -> setState(binding.loading)
+                NetworkState.ERROR -> setState(binding.iconSearch)
                 else ->  setState(binding.listSearch)
             }
         })
@@ -70,7 +72,11 @@ class SearchFragment(
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             setHasFixedSize(true)
 
-            adapter = searchAdapter
+            adapter = searchAdapter.withLoadStateFooter(
+                footer = SearchLoadStateAdapter {
+                    searchAdapter.retry()
+                }
+            )
         }
 
         if (searchAdapter.itemCount == 0) {
@@ -96,6 +102,8 @@ class SearchFragment(
                 viewModel.changeTextSearch(keyword = it.toString())
             }
             clearTextSearch.setOnClickListener {
+                binding.iconSearch.isVisible = true
+                searchAdapter.submitData(lifecycle, PagingData.empty())
                 textSearch.text = null
                 textSearch.requestFocus()
             }

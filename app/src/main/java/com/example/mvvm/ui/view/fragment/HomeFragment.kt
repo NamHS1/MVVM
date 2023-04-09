@@ -11,10 +11,12 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.mvvm.MovieApplication
 import com.example.mvvm.R
 import com.example.mvvm.data.enumtype.ItemMovieType
+import com.example.mvvm.data.enumtype.MovieType
 import com.example.mvvm.databinding.FragmentHomeBinding
-import com.example.mvvm.extension.orEmpty
+import com.example.mvvm.extension.addLoadStateListener
 import com.example.mvvm.ui.base.BaseFragment
 import com.example.mvvm.ui.adapter.MovieAdapter
+import com.example.mvvm.ui.adapter.loadstate.HomeLoadStateAdapter
 import com.example.mvvm.ui.viewmodel.HomeViewModel
 import com.example.mvvm.util.EventObserver
 import com.example.mvvm.util.PageTransformer
@@ -29,44 +31,25 @@ class HomeFragment(
 
     private val popularAdapter by lazy {
         MovieAdapter(
-            requireContext(),
             ItemMovieType.SMALL,
             actionMoveDetail = {
                 controller.navigate(HomeFragmentDirections.actionMoveToMovieDetail(id = it))
-            },
-            actionLoadMore = {
-                viewModel.getMoviesPopular()
-            },
-            actionReload = {
-                viewModel.getMoviesPopular()
             }
         )
     }
     private val nowPlayingAdapter by lazy {
         MovieAdapter(
-            requireContext(),
             ItemMovieType.SMALL,
             actionMoveDetail = {
                 controller.navigate(HomeFragmentDirections.actionMoveToMovieDetail(id = it))
-            },
-            actionLoadMore = {
-                viewModel.getMoviesNowPlaying()
-            },
-            actionReload = {
-                viewModel.getMoviesNowPlaying()
             }
         )
     }
     private val upComingAdapter by lazy {
         MovieAdapter(
-            requireContext(),
             ItemMovieType.BIG,
             actionMoveDetail = {
                 controller.navigate(HomeFragmentDirections.actionMoveToMovieDetail(id = it))
-            },
-            actionLoadMore = {},
-            actionReload = {
-                viewModel.getMoviesUpComing()
             }
         )
     }
@@ -93,32 +76,13 @@ class HomeFragment(
     override fun observeViewModel() {
         viewModel.apply {
             moviesNowPlaying.observe(viewLifecycleOwner, EventObserver {
-                nowPlayingAdapter.movies = it.movies.orEmpty()
+                nowPlayingAdapter.submitData(lifecycle, it)
             })
-            moviesNowPlaying.observe(viewLifecycleOwner, EventObserver {
-                nowPlayingAdapter.movies = it.movies.orEmpty()
+            moviesUpComing.observe(viewLifecycleOwner, EventObserver {
+                upComingAdapter.submitData(lifecycle, it)
             })
             moviesPopular.observe(viewLifecycleOwner, EventObserver {
-                popularAdapter.movies = it.movies.orEmpty()
-            })
-
-            moviesUpComing.observe(viewLifecycleOwner, EventObserver {
-                it.movies?.let { movie ->
-                    initIndicatorBanner(movie.size)
-                    upComingAdapter.movies = movie.orEmpty()
-                }
-            })
-
-            statePopular.observe(viewLifecycleOwner, EventObserver {
-                popularAdapter.state = it
-            })
-
-            stateUpComing.observe(viewLifecycleOwner, EventObserver {
-                upComingAdapter.state = it
-            })
-
-            stateNowPlaying.observe(viewLifecycleOwner, EventObserver {
-                nowPlayingAdapter.state = it
+                popularAdapter.submitData(lifecycle, it)
             })
 
             autoScroll.observe(viewLifecycleOwner, EventObserver {
@@ -130,8 +94,8 @@ class HomeFragment(
     override fun initControls() {
         binding.banner.apply {
             adapter = upComingAdapter
+            offscreenPageLimit = 3
             isNestedScrollingEnabled = false
-            initIndicatorBanner(upComingAdapter.itemCount)
 
             val screenHeight = resources.displayMetrics.heightPixels
             setPageTransformer(PageTransformer(screenHeight))
@@ -139,21 +103,47 @@ class HomeFragment(
 
         intiRecyclerView(binding.listPopular, popularAdapter)
         intiRecyclerView(binding.listPlayNow, nowPlayingAdapter)
+
+        setStatePage()
+    }
+
+    private fun setStatePage() {
+        upComingAdapter.addLoadStateListener(
+            root = binding.bannerState,
+            type = MovieType.UPCOMING
+        ) {
+            viewModel.bannerSize = it
+            initIndicatorBanner(it)
+        }
+
+        nowPlayingAdapter.addLoadStateListener(
+            root = binding.nowPlayingState
+        ) {}
+        popularAdapter.addLoadStateListener(
+            root = binding.popularState
+        ) {}
     }
 
     override fun initEvent() {
         binding.banner.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                viewModel.setIndexAutoScroll(position)
-                (binding.indicatorBanner[position] as RadioButton).isChecked = true
+                if (binding.indicatorBanner.childCount > 0) {
+                    viewModel.indexAutoScroll = position
+                    (binding.indicatorBanner[position] as RadioButton).isChecked = true
+                }
             }
 
             override fun onPageScrollStateChanged(state: Int) {
                 super.onPageScrollStateChanged(state)
                 when (state) {
-                    ViewPager2.SCROLL_STATE_DRAGGING, ViewPager2.SCROLL_STATE_SETTLING -> viewModel.cancelAutoScroll()
-                    else -> viewModel.startAutoScroll()
+                    ViewPager2.SCROLL_STATE_DRAGGING,
+                    ViewPager2.SCROLL_STATE_SETTLING -> {
+                        viewModel.cancelAutoScroll()
+                    }
+                    else -> {
+                        viewModel.startAutoScroll()
+                    }
                 }
             }
         })
@@ -165,8 +155,15 @@ class HomeFragment(
 
     private fun intiRecyclerView(recyclerView: RecyclerView, movieAdapter: MovieAdapter) {
         recyclerView.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = movieAdapter
+            layoutManager = LinearLayoutManager(
+                context,
+                LinearLayoutManager.HORIZONTAL,
+                false)
+            adapter = movieAdapter.withLoadStateFooter(
+                footer = HomeLoadStateAdapter {
+                    movieAdapter.retry()
+                }
+            )
 
             isNestedScrollingEnabled = false
             setHasFixedSize(true)

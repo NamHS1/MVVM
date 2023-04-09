@@ -1,7 +1,6 @@
 package com.example.mvvm.ui.adapter.viewholder
 
 import com.example.mvvm.data.database.entity.Favorite
-import com.example.mvvm.data.enumtype.State
 import com.example.mvvm.databinding.ItemFavoriteBinding
 import com.example.mvvm.extension.loadImage
 import com.example.mvvm.ui.base.BaseViewHolder
@@ -11,21 +10,21 @@ class FavoriteViewHolder(
     private val actionMoveDetail: (Int) -> Unit,
     private val actionFavorite: (Int, Favorite) -> Unit
 ) : BaseViewHolder<Favorite>(binding.root) {
-    override fun bind(model: Favorite?, state: State) {
+    override fun bind(t: Favorite?) {
         binding.apply {
-            model?.let { model ->
-                title.text = model.title
-                releaseDate.text = model.release
-                voteAverage.rating = model.voteAverage
+            t?.let { favorite ->
+                title.text = favorite.title
+                releaseDate.text = favorite.release
+                voteAverage.rating = favorite.voteAverage
 
-                image.loadImage(model.posterPath)
+                image.loadImage(favorite.posterPath)
 
                 root.setOnClickListener {
-                    actionMoveDetail.invoke(model.id)
+                    actionMoveDetail.invoke(favorite.id)
                 }
 
                 favourite.setOnClickListener {
-                    actionFavorite.invoke(adapterPosition, model)
+                    actionFavorite.invoke(bindingAdapterPosition, favorite)
                 }
             }
         }

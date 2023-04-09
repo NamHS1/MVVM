@@ -8,19 +8,18 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
-
     @GET("movie/popular")
-    fun getPopularMovies(@Query("page") page: Int): Observable<Results>
+    suspend fun getPopularMovies(@Query("page") page: Int): Results
 
     @GET("movie/upcoming")
-    fun getUpComingMovies(@Query("page") page: Int): Observable<Results>
+    suspend fun getUpComingMovies(@Query("page") page: Int): Results
 
     @GET("movie/now_playing")
-    fun getNowPlayingMovies(@Query("page") page: Int): Observable<Results>
+    suspend fun getNowPlayingMovies(@Query("page") page: Int): Results
 
     @GET("movie/{movie_id}")
     fun getMovieDetail(@Path("movie_id") movieId: Int): Observable<MovieDetail>
 
     @GET("search/movie")
-    fun searchMovie(@Query("query") query: String, @Query("page") page: Int): Observable<Results>
+    suspend fun searchMovie(@Query("query") query: String, @Query("page") page: Int): Results
 }
